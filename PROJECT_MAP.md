@@ -9,9 +9,8 @@
 ```
 D:\0703\
 ├── ai-toolbox/                  # 主项目 — AI 短视频广告全链条生成
-│   ├── work/                    # ← 主工作目录 (FastAPI + React 19)
-│   │   └── modules/hashtag_enricher/  # 话题标签生成（已内嵌，无独立副本）
-│   └── alxuanchuan/             # Express + Gemini 独立服务器
+│   └── work/                    # ← 主工作目录 (FastAPI + React 19)
+│       └── modules/hashtag_enricher/  # 话题标签生成（已内嵌，无独立副本）
 ├── social-auto-upload-main/     # 多平台视频发布自动化 (Flask + Vue 3)
 ├── TrendRadar-master/           # 热点新闻聚合分析与推送 (Python + SQLite)
 ├── model_config.py              # 共享 AI 模型配置（含密钥，勿提交）
@@ -29,7 +28,7 @@ D:\0703\
 ### 一键启动
 
 ```
-start-all.bat   →  5 个服务窗口
+start-all.bat   →  4 个服务窗口
 stop-all.bat    →  全部停止
 ```
 
@@ -47,7 +46,6 @@ stop-all.bat    →  全部停止
 | 子项目 | 文档文件 |
 |--------|---------|
 | `ai-toolbox/work/` | `README.md` |
-| `ai-toolbox/alxuanchuan/` | `README.md` |
 | `social-auto-upload-main/` | `CLAUDE.md`、`README.md`、`sau_backend/README.md`、`sau_frontend/README.md` |
 | `TrendRadar-master/` | `CLAUDE.md`、`README.md`、`README-EN.md`、`README-MCP-FAQ.md`、`README-Cherry-Studio.md` |
 | 根目录 | `SYSTEM_BOUNDARY.md`（系统边界）|
@@ -149,33 +147,7 @@ Step 1 → Step 2 → Step 3 → Step 4 → Step 5 → Step 6 → Step 7 → Ste
 
 ---
 
-## 三、ai-toolbox/alxuanchuan/ — Express + Gemini 独立服务器
-
-### 入口
-
-| 文件 | 职责 |
-|------|------|
-| `server.ts` | Express 后端：6 个 Gemini API 路由 |
-| `src/main.tsx` → `src/App.tsx` | React 前端：4 Tab（无 Workflow） |
-
-### 端点
-
-```
-POST /api/generate-prompt         → gemini-3.5-flash
-POST /api/generate-image          → gemini-3.1-flash-lite-image
-POST /api/deconstruct-visual      → Gemini vision
-POST /api/recognize-image         → Gemini vision
-POST /api/match-lyrics            → Gemini
-POST /api/explosive-copywriting   → Gemini
-```
-
-前端组件与 `work/src/` 同构但使用 Gemini API。
-
----
-
----
-
-## 四、social-auto-upload-main/ — 多平台视频发布
+## 三、social-auto-upload-main/ — 多平台视频发布
 
 ### 入口
 

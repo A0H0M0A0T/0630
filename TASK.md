@@ -15,7 +15,6 @@
 | 目录 | 用途 | 独立程度 |
 |------|------|---------|
 | `ai-toolbox/work/` | AI 短视频广告全链条生成（主项目） | 独立前后端 + 独立 DB |
-| `ai-toolbox/alxuanchuan/` | 同功能 Gemini 变体 | 独立 Express 服务器 |
 | `social-auto-upload-main/` | 多平台视频发布自动化 | 独立 Flask + Vue 3 + 独立 DB |
 | `TrendRadar-master/` | 热点新闻聚合分析与推送 | 独立 Python 项目（v6.10.0） |
 
@@ -31,12 +30,6 @@
 
 - [x] ~~确认 `ai-toolbox/work/modules/hashtag_enricher/` 与独立 `hashtag-enricher/` 的关系和同步策略~~
   - **已过时**：独立 `hashtag-enricher/` 已删除。标签生成仅保留 `ai-toolbox/work/modules/hashtag_enricher/` 一处。
-- [x] 确认 `ai-toolbox/work/` 与 `ai-toolbox/alxuanchuan/` 的维护策略
-  - **结论**：功能同构但**独立维护**，代码不共享。work/ 使用 DeepSeek+GPT，alxuanchuan/ 使用 Gemini。
-  - 前端组件结构相同但独立代码库。当前无同步机制，修改需手动镜像。
-  - **决策**：保持现状并说明原因 — 模型供应商不同导致 prompt/API 调用差异较大，强行统一成本高。
-- [x] ~~确认 `hashtag-enricher/social-auto-upload/` 空 git 子模块的用途~~
-  - **已过时**：随 `hashtag-enricher/` 一并删除。
 - [x] 确认 ai-toolbox 产出（视频+标签）到 social-auto-upload 发布是否有自动化衔接需求
   - **结论**：当前**无自动化管道**。用户手动从 A 取产出（视频+标签）→ 用 C 的 CLI/Web 发布。
   - 两个系统的 `--tags` 参数可接收标签但格式要求不同（A 出 JSON，C 需逗号分隔字符串）。
@@ -60,9 +53,6 @@
   - **核实结果**：`vite.config.js` 默认端口为 **5173**。`start-all.bat` 通过 `npx vite --port 5174` 显式覆盖为 5174。
   - `CLAUDE.md` 写的是 `npm run dev`（即 5173），`PROJECT_MAP.md` 表格写的是 5174。
   - **结论**：两者均正确 — 取决于启动方式。已更新 `PROJECT_MAP.md` 注明此差异。
-- [x] `ai-toolbox/alxuanchuan/README.md` 只有 AI Studio 模板默认文本，缺项目说明
-  - **核实结果**：确认为 Google AI Studio 自动生成模板（"Run and deploy your AI Studio app"），未描述本项目功能和架构。
-  - **决策**：待后续补充。当前不修改业务文档内容。
 - [x] `sau_frontend/README.md` 是通用 Vue3 模板，缺项目特有信息
   - **核实结果**：确认为通用 Vue3+Vite+ElementPlus 脚手架模板，未描述本项目的多平台发布功能。
   - **决策**：待后续补充。

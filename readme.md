@@ -118,12 +118,6 @@ ai-toolbox/
 │   │   ├── video/                           # 参考数据: 公司产品数据.txt, 模板视频分析结果/, 模板图分析结果/
 │   │   └── generated/                       # AI 生成图片输出
 │   └── dist/                                # Vite 构建产物 (生产模式由 server.py 挂载)
-│
-├── alxuanchuan/                             # 独立 Node.js 服务器 (Express + Gemini)
-│   ├── server.ts                            # Express 后端 (~532 行): 6 个 Gemini API 路由
-│   ├── src/                                 # React 前端 (与 work/ 同构但用 Gemini 而非 DeepSeek)
-│   ├── package.json                         # @google/genai + React 19 + Vite 6
-│   └── .env.example                         # GEMINI_API_KEY
 ├── uv.lock
 ├── readme.md                                # 产品需求文档（中文, 约 286 行，⚠️ 含 D:\0000 等旧绝对路径，待核实）
 ├── PROJECT_MAP.md                           # 模块到文件的映射与调试指南
@@ -382,18 +376,6 @@ ai-toolbox/
 | GET | `/api/hashtag/config` | 返回标签生成配置 (3 平台 + 限制 + 模型) |
 | POST | `/api/hashtag/generate` | 标签生成 (topic 模式 / dir 扫描模式, 路径遍历防护) |
 | GET | `/api/health` | 健康检查 |
-
----
-
-# alxuanchuan/ — Express + Gemini 独立服务器
-
-- 与 `ai-toolbox/work/` 功能同构但使用 **Google Gemini** 而非 DeepSeek+GPT
-- Express 端口 3000，20MB body limit
-- 6 个端点: `/api/generate-prompt` (gemini-3.5-flash), `/api/generate-image` (gemini-3.1-flash-lite-image), `/api/deconstruct-visual`, `/api/recognize-image`, `/api/match-lyrics`, `/api/explosive-copywriting`
-- 所有端点用 structured JSON schema 约束输出
-- PRESET_FALLBACKS: 3 个中文主题预设，各含 Unsplash 图片 URL
-- 前端 4 Tab: hand-drawn/recognition/lyrics/copywriting（无 workflow Tab）
-- 与 ai-toolbox/work/src 共享相同组件结构和类型定义
 
 ---
 
