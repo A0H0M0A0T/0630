@@ -98,11 +98,13 @@ Step 1 → Step 2 → Step 3 → Step 4 → Step 5 → Step 6 → Step 7 → Ste
 | 文件 | 职责 |
 |------|------|
 | `modules/wenan/generator.py` | 文案批量生成：4 种类型、trigram 去重、风控规则 |
-| `modules/tishici/ai_client.py` | 多模型 AIClient（含 API 密钥，勿提交） |
+| `modules/tishici/ai_client.py` | 多模型 AIClient（从 `model_config` 导入，无内嵌密钥） |
 | `modules/tishici/database.py` | PromptDatabase + SimilarityChecker |
 | `modules/tupian/services/recognize.py` | GPT-4o Vision 识图 |
 | `modules/tupian/database/db.py` | 识图历史 SQLite |
 | `modules/hashtag_enricher/enricher/` | 标签生成（config/llm/reader/writer/postprocess/logger） |
+| `modules/common/sanitize.py` | 品牌文本 sanitize 共享规则 |
+| `modules/common/compliance.py` | 合规检查共享规则（36 条 + 27 个禁用词） |
 
 ### 前端
 
@@ -139,11 +141,11 @@ Step 1 → Step 2 → Step 3 → Step 4 → Step 5 → Step 6 → Step 7 → Ste
 | 原始参考资料进入最终提示词 | `modules/video_prompt/assembler.py` |
 | 分镜内容方向不对 | `modules/storyboard/prompts.py` |
 | 生图产品外观不对 | `modules/keyframe/extractor.py` |
-| 口播文案卖点/合规/CTA 不对 | `modules/orchestrator/engine.py` → `_generate_copy()` |
+| 口播文案卖点/合规/CTA 不对 | `modules/orchestrator/engine.py` → `_generate_copy()` + `modules/common/compliance.py` |
 | 图片评分误判 | `modules/scorer/scorer.py` |
 | 视频提交参数不对 | `modules/video_generation/client.py` |
 | 前端诊断面板异常 | `src/workflowDiagnostics.ts` |
-| 批量文案风控拦截异常 | `modules/wenan/generator.py` → `_CONTENT_BLOCK_RULES` |
+| 批量文案风控拦截异常 | `modules/wenan/generator.py` → `_CONTENT_BLOCK_RULES` + `modules/common/compliance.py` |
 
 ---
 
@@ -185,12 +187,14 @@ POST /api/explosive-copywriting   → Gemini
 
 新代代码在 `uploader/`，旧代代码在 `myUtils/`。
 
-### 两条调用路径（不共享 dispatch，修复需镜像）
+### 两条调用路径（平台标识已统一为命名常量）
 
 ```
 Web:  POST /postVideo → myUtils/postVideo.py → uploader/*/main.py
 CLI:  sau <platform> upload-video → sau_cli.py:dispatch() → uploader/*/main.py
 ```
+
+平台类型常量定义在 `utils/platforms.py`（`XIAOHONGSHU`/`TENCENT`/`DOUYIN`/`KUAISHOU`），两入口均引用同一套命名常量。
 
 ### 上传器
 
@@ -216,6 +220,7 @@ BaseVideoUploader (uploader/base_video.py)
 | `utils/constant.py` | TencentZoneTypes + VideoZoneTypes |
 | `utils/log.py` | loguru：9 平台独立 logger |
 | `utils/login_qrcode.py` | QR 码生成/解析 |
+| `utils/platforms.py` | 平台类型常量（XIAOHONGSHU/TENCENT/DOUYIN/KUAISHOU + 映射表） |
 | `db/createTable.py` | SQLite schema |
 
 ### Claude Code Skills
