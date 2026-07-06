@@ -34,3 +34,4 @@ Thumbs.db
 # ── Misc ──
 .DS_Store
 *.log
+claude-settings.json
