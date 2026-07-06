@@ -23,6 +23,7 @@ from werkzeug.utils import secure_filename
 from conf import BASE_DIR
 from myUtils.login import get_tencent_cookie, douyin_cookie_gen, get_ks_cookie, xiaohongshu_cookie_gen
 from myUtils.postVideo import post_video_tencent, post_video_DouYin, post_video_ks, post_video_xhs
+from utils.platforms import XIAOHONGSHU, TENCENT, DOUYIN, KUAISHOU
 from utils.log import backend_logger
 
 active_queues = {}
@@ -468,16 +469,16 @@ def postVideo():
 
     try:
         match type:
-            case 1:
+            case XIAOHONGSHU:
                 post_video_xhs(title, file_list, tags, account_list, category, enableTimer, videos_per_day, daily_times,
-                                   start_days, thumbnail_path)
-            case 2:
+                                    start_days, thumbnail_path)
+            case TENCENT:
                 post_video_tencent(title, file_list, tags, account_list, category, enableTimer, videos_per_day, daily_times,
-                                   start_days, is_draft, thumbnail_path)
-            case 3:
+                                    start_days, is_draft, thumbnail_path)
+            case DOUYIN:
                 post_video_DouYin(title, file_list, tags, account_list, category, enableTimer, videos_per_day, daily_times,
                           start_days, thumbnail_path, productLink, productTitle)
-            case 4:
+            case KUAISHOU:
                 post_video_ks(title, file_list, tags, account_list, category, enableTimer, videos_per_day, daily_times,
                           start_days, thumbnail_path)
             case _:
@@ -566,16 +567,16 @@ def postVideoBatch():
         # 打印获取到的数据（仅作为示例）
         backend_logger.info(f"📤 批量发布 | 平台: {type} | 标题: {title} | 文件数: {len(file_list)} | 账号数: {len(account_list)}")
         match type:
-            case 1:
+            case XIAOHONGSHU:
                 post_video_xhs(title, file_list, tags, account_list, category, enableTimer, videos_per_day, daily_times,
                                start_days, thumbnail_path)
-            case 2:
+            case TENCENT:
                 post_video_tencent(title, file_list, tags, account_list, category, enableTimer, videos_per_day, daily_times,
                                    start_days, is_draft, thumbnail_path)
-            case 3:
+            case DOUYIN:
                 post_video_DouYin(title, file_list, tags, account_list, category, enableTimer, videos_per_day, daily_times,
                           start_days, thumbnail_path, productLink, productTitle)
-            case 4:
+            case KUAISHOU:
                 post_video_ks(title, file_list, tags, account_list, category, enableTimer, videos_per_day, daily_times,
                           start_days, thumbnail_path)
     # 返回响应给客户端
@@ -710,28 +711,28 @@ def download_cookie():
 # 包装函数：在线程中运行异步函数
 def run_async_function(type,id,status_queue):
     match type:
-        case '1':
+        case str(XIAOHONGSHU):
             loop = asyncio.new_event_loop()
             asyncio.set_event_loop(loop)
             try:
                 loop.run_until_complete(xiaohongshu_cookie_gen(id, status_queue))
             finally:
                 loop.close()
-        case '2':
+        case str(TENCENT):
             loop = asyncio.new_event_loop()
             asyncio.set_event_loop(loop)
             try:
                 loop.run_until_complete(get_tencent_cookie(id,status_queue))
             finally:
                 loop.close()
-        case '3':
+        case str(DOUYIN):
             loop = asyncio.new_event_loop()
             asyncio.set_event_loop(loop)
             try:
                 loop.run_until_complete(douyin_cookie_gen(id,status_queue))
             finally:
                 loop.close()
-        case '4':
+        case str(KUAISHOU):
             loop = asyncio.new_event_loop()
             asyncio.set_event_loop(loop)
             try:

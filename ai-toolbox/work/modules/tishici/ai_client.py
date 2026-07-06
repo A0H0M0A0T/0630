@@ -8,34 +8,7 @@ import random
 from typing import Optional, List, Dict, Any, Tuple
 from openai import OpenAI
 
-
-# Default model configurations
-MODELS = {
-    "main": {
-        "name": "大号火山 (ark-code-latest)",
-        "api_key": "REDACTED_VOLC1",
-        "base_url": "https://ark.cn-beijing.volces.com/api/coding/v3",
-        "model": "ark-code-latest"
-    },
-    "model2": {
-        "name": "小号1火山 (ahmat2)",
-        "api_key": "REDACTED_VOLC2",
-        "base_url": "https://ark.cn-beijing.volces.com/api/coding/v3",
-        "model": "ark-code-latest"
-    },
-    "model3": {
-        "name": "小号2火山 (api-key-maierdan)",
-        "api_key": "REDACTED_VOLC3",
-        "base_url": "https://ark.cn-beijing.volces.com/api/coding/v3",
-        "model": "ark-code-latest"
-    },
-    "deepseek4": {
-        "name": "DeepSeek V4-Pro",
-        "api_key": "REDACTED_DEEPSEEK",
-        "base_url": "https://api.deepseek.com",
-        "model": "deepseek-v4-pro"
-    }
-}
+from model_config import TISHICI_MODELS as MODELS
 
 
 # ====== 🎯 目标人群选项 ======

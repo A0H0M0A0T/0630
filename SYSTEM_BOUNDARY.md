@@ -92,59 +92,37 @@ D:\0703\
 
 ## 四、高风险重复点
 
-以下重复项均基于已读取文档中的明确描述。当前阶段**仅标记，不做代码重构**。
-
-### 1. 标签系统（已解决）
-
-| 位置 | 说明 |
-|------|------|
-| `ai-toolbox/work/modules/hashtag_enricher/` | 唯一副本，桥接到 `model_config.WENAN` |
-
-独立 `hashtag-enricher/` 已移除。标签生成只有 `ai-toolbox/work/modules/hashtag_enricher/` 一处。**此项不再是重复点。**
-
-### 2. social-auto-upload Web/CLI 两条调用路径
+### 1. social-auto-upload Web/CLI 两条调用路径
 
 | 路径 | 入口 | dispatch 位置 |
 |------|------|-------------|
 | Web | `POST /postVideo` → `myUtils/postVideo.py` | `sau_backend.py` |
 | CLI | `sau <platform> upload-video` | `sau_cli.py:dispatch()` |
 
-**依据**：`social-auto-upload-main/CLAUDE.md` 明确写"两个路径**不共享 dispatch 逻辑**。修复必须镜像到两处"。
+**已修复**：创建 `utils/platforms.py`（`XIAOHONGSHU`/`TENCENT`/`DOUYIN`/`KUAISHOU` 常量 + `PLATFORM_TYPE_MAP`）。`sau_backend.py` 的 3 处 match 语句和 `sau_cli.py` 均使用同一套命名常量，平台类型映射统一维护。两条调用路径的 dispatch 逻辑仍各自独立（CLI 构建 request dataclass，Web 调用 legacy wrapper），但平台标识已共享。
 
-### 3. model_config 多份
+### 2. model_config 多份
 
 | 位置 | 说明 |
 |------|------|
-| `D:\0703\model_config.py` | 根目录 |
-| `ai-toolbox/work/model_config.py` | 主项目目录 |
-| `ai-toolbox/work/modules/tishici/ai_client.py` | 模块内嵌 |
+| `D:\0703\model_config.py` | 根目录（`.gitignore` 排除，从未提交） |
+| `ai-toolbox/work/model_config.py` | 唯一 canonical copy |
+| `ai-toolbox/work/modules/tishici/ai_client.py` | ~~模块内嵌~~ → 改为 `from model_config import TISHICI_MODELS` |
 
-**依据**：`readme.md`（根）和 `PROJECT_MAP.md` 均标注含硬编码 API 密钥，"切勿提交到版本控制"。三处需保持同步。
+**已修复**：`ai_client.py` 中内嵌 `MODELS` 字典已删除，改为从 `model_config` 导入。根目录 `model_config.py` 从未被提交（`.gitignore` 排除），不需要同步。
 
-### 4. sanitize 规则 — 已抽离共享（非重复项，已验证）
+### 3. 合规检查规则双份
 
-sanitize 规则已抽离为三层架构，不存在重复：
-
-| 文件 | 变量 | 条目 | 说明 |
-|------|------|------|------|
-| `ai-toolbox/work/modules/common/sanitize.py` | `COMMON_SANITIZE_MAP` | 42 条 | 共享基础规则（品牌名/颜色/容器/合规措辞） |
-| `ai-toolbox/work/modules/orchestrator/engine.py` | `_ENGINE_EXTRA_SANITIZE` | 16 条 | engine 专有扩展（与 COMMON 不重叠） |
-| `ai-toolbox/work/modules/video_prompt/assembler.py` | `_ASSEMBLER_EXTRA_SANITIZE` | 3 条 | assembler 专有扩展（与 COMMON 不重叠） |
-
-所有文件通过 `from modules.common.sanitize import sanitize_text` 共享基础规则，扩展规则互不重叠。**此项不是重复点，已在代码层面解决。**
-
-### 5. 合规检查规则双份（确认存在，仍独立维护）
-
-| 文件 | 规则类型 | 说明 |
+| 文件 | 规则来源 | 说明 |
 |------|---------|------|
-| `ai-toolbox/work/modules/wenan/generator.py` | `_CONTENT_BLOCK_RULES`（59 条） | 批量文案风控：饮后承诺（13）、养生暗示（15）、违规功效（9）、假体验（15）、编造数量（7） |
-| `ai-toolbox/work/modules/orchestrator/engine.py:_generate_copy()` | `_COPY_BANNED` + CTA 执行 | 口播文案合规检查：禁用语列表 + CTA 检测 + 安全回退文案 |
+| `ai-toolbox/work/modules/wenan/generator.py` | `modules/common/compliance.py` + 自有规则（假体验/编造数量） | 批量文案风控：继承 36 条共享规则 + 22 条独有规则 |
+| `ai-toolbox/work/modules/orchestrator/engine.py:_generate_copy()` | `modules/common/compliance.py` | 口播文案合规检查：使用共享 `COMPLIANCE_BANNED_WORDS` |
 
-两个文件**不共享检查逻辑**，在 "饮后承诺" "养生暗示" "疾病术语" "违规功效" 四个分类上存在大量重叠规则，但各自独立实现，互不调用。**修改规则时需同步两处。**
+**已修复**：创建 `modules/common/compliance.py` 提供 `COMPLIANCE_SHARED_RULES`（36 条分类规则）和 `COMPLIANCE_BANNED_WORDS`（27 条禁用词）。两文件各自保留执行逻辑（软拒绝 vs 硬拒绝），共享同一份规则定义。
 
-### 6. ai-toolbox/work 与 ai-toolbox/alxuanchuan 功能同构
+### 4. ai-toolbox/work 与 ai-toolbox/alxuanchuan 功能同构
 
-**依据**：`PROJECT_MAP.md` 标注"前端组件与 work/src/ 同构但使用 Gemini API"。两个独立代码库实现相同的 UI（AI 绘图/识图/文案/词牌匹配），只是后端 AI 模型不同。文档未描述同步策略。
+**依据**：`PROJECT_MAP.md` 标注"前端组件与 work/src/ 同构但使用 Gemini API"。两个独立代码库实现相同的 UI（AI 绘图/识图/文案/词牌匹配），只是后端 AI 模型不同。决策：**保持现状**，模型供应商不同导致 prompt/API 调用差异大，强行统一成本高。
 
 ---
 

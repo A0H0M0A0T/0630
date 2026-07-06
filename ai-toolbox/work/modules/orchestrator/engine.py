@@ -13,6 +13,7 @@ from .state import WorkflowState, init_workflow_db, record_workflow_event
 from modules.tupian.logger import get_logger
 from modules.common.sanitize import sanitize_text
 from modules.common.text_utils import trigram_jaccard
+from modules.common.compliance import COMPLIANCE_BANNED_WORDS
 from modules.storyboard.generator import generate_storyboard
 from modules.keyframe.extractor import extract_keyframe_prompts, build_image_prompt_pack
 from modules.scorer.scorer import score_all_images
@@ -1407,13 +1408,7 @@ class WorkflowEngine:
         text = (response.choices[0].message.content or "").strip()
 
         # ── Compliance check: if banned words appear, use safe fallback ──
-        _COPY_BANNED = [
-            "降血压", "降血糖", "降血脂", "软化血管", "不上头", "不头疼", "不口干",
-            "不难受", "不胀肚", "三高", "养生", "保健", "治疗", "药效", "疗愈",
-            "糖尿病", "高血压", "高血脂", "尿酸", "嘌呤", "痛风", "心血管",
-            "健康啤酒", "顾健康", "健康劲儿", "健康清爽", "第二天不", "没有宿醉", "喝了不",
-        ]
-        has_banned = any(b in text for b in _COPY_BANNED)
+        has_banned = any(b in text for b in COMPLIANCE_BANNED_WORDS)
 
         if len(text) < 20 or has_banned:
             # Safe fallback — no medical claims, no hangover promises
