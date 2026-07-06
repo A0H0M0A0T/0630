@@ -90,43 +90,7 @@ D:\0703\
 
 ---
 
-## 四、高风险重复点
-
-### 1. social-auto-upload Web/CLI 两条调用路径
-
-| 路径 | 入口 | dispatch 位置 |
-|------|------|-------------|
-| Web | `POST /postVideo` → `myUtils/postVideo.py` | `sau_backend.py` |
-| CLI | `sau <platform> upload-video` | `sau_cli.py:dispatch()` |
-
-**已修复**：创建 `utils/platforms.py`（`XIAOHONGSHU`/`TENCENT`/`DOUYIN`/`KUAISHOU` 常量 + `PLATFORM_TYPE_MAP`）。`sau_backend.py` 的 3 处 match 语句和 `sau_cli.py` 均使用同一套命名常量，平台类型映射统一维护。两条调用路径的 dispatch 逻辑仍各自独立（CLI 构建 request dataclass，Web 调用 legacy wrapper），但平台标识已共享。
-
-### 2. model_config 多份
-
-| 位置 | 说明 |
-|------|------|
-| `D:\0703\model_config.py` | 根目录（`.gitignore` 排除，从未提交） |
-| `ai-toolbox/work/model_config.py` | 唯一 canonical copy |
-| `ai-toolbox/work/modules/tishici/ai_client.py` | ~~模块内嵌~~ → 改为 `from model_config import TISHICI_MODELS` |
-
-**已修复**：`ai_client.py` 中内嵌 `MODELS` 字典已删除，改为从 `model_config` 导入。根目录 `model_config.py` 从未被提交（`.gitignore` 排除），不需要同步。
-
-### 3. 合规检查规则双份
-
-| 文件 | 规则来源 | 说明 |
-|------|---------|------|
-| `ai-toolbox/work/modules/wenan/generator.py` | `modules/common/compliance.py` + 自有规则（假体验/编造数量） | 批量文案风控：继承 36 条共享规则 + 22 条独有规则 |
-| `ai-toolbox/work/modules/orchestrator/engine.py:_generate_copy()` | `modules/common/compliance.py` | 口播文案合规检查：使用共享 `COMPLIANCE_BANNED_WORDS` |
-
-**已修复**：创建 `modules/common/compliance.py` 提供 `COMPLIANCE_SHARED_RULES`（36 条分类规则）和 `COMPLIANCE_BANNED_WORDS`（27 条禁用词）。两文件各自保留执行逻辑（软拒绝 vs 硬拒绝），共享同一份规则定义。
-
-### 4. ai-toolbox/work 与 ai-toolbox/alxuanchuan 功能同构
-
-**依据**：`PROJECT_MAP.md` 标注"前端组件与 work/src/ 同构但使用 Gemini API"。两个独立代码库实现相同的 UI（AI 绘图/识图/文案/词牌匹配），只是后端 AI 模型不同。决策：**保持现状**，模型供应商不同导致 prompt/API 调用差异大，强行统一成本高。
-
----
-
-## 五、文档参考
+## 四、文档参考
 
 | 文档 | 位置 | 用途 |
 |------|------|------|
