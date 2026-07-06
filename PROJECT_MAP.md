@@ -10,8 +10,8 @@
 D:\0703\
 ├── ai-toolbox/                  # 主项目 — AI 短视频广告全链条生成
 │   ├── work/                    # ← 主工作目录 (FastAPI + React 19)
+│   │   └── modules/hashtag_enricher/  # 话题标签生成（已内嵌，无独立副本）
 │   └── alxuanchuan/             # Express + Gemini 独立服务器
-├── hashtag-enricher/            # LLM 话题标签生成器 (Python CLI)
 ├── social-auto-upload-main/     # 多平台视频发布自动化 (Flask + Vue 3)
 ├── TrendRadar-master/           # 热点新闻聚合分析与推送 (Python + SQLite)
 ├── model_config.py              # 共享 AI 模型配置（含密钥，勿提交）
@@ -46,9 +46,8 @@ stop-all.bat    →  全部停止
 
 | 子项目 | 文档文件 |
 |--------|---------|
-| `ai-toolbox/work/` | 无独立 README/CLAUDE（详见根目录 CLAUDE.md） |
+| `ai-toolbox/work/` | `README.md` |
 | `ai-toolbox/alxuanchuan/` | `README.md` |
-| `hashtag-enricher/` | `README.md` |
 | `social-auto-upload-main/` | `CLAUDE.md`、`README.md`、`sau_backend/README.md`、`sau_frontend/README.md` |
 | `TrendRadar-master/` | `CLAUDE.md`、`README.md`、`README-EN.md`、`README-MCP-FAQ.md`、`README-Cherry-Studio.md` |
 | 根目录 | `SYSTEM_BOUNDARY.md`（系统边界）|
@@ -172,31 +171,9 @@ POST /api/explosive-copywriting   → Gemini
 
 ---
 
-## 四、hashtag-enricher/ — 话题标签生成器
-
-### 入口
-
-| 文件 | 职责 |
-|------|------|
-| `src/hashtag_enricher/enrich.py` | CLI 入口：`--dir` / `--file` / `--lang` / `--platform` / `--force` |
-
-### 核心模块
-
-| 文件 | 职责 |
-|------|------|
-| `enricher/config.py` | 配置加载（lazy singleton） |
-| `enricher/llm.py` | LLM 调用（detect_language / generate_hashtags / detect_and_generate） |
-| `enricher/reader.py` | 视频元数据解析（resolve_meta → VideoMeta） |
-| `enricher/writer.py` | JSON 输出（原子写入） |
-| `enricher/postprocess.py` | 标签后处理（7 步校验流水线） |
-
-平台限制：YouTube 60、TikTok 5、Instagram 5。
-与 `ai-toolbox/work/modules/hashtag_enricher/` 功能相同，独立维护。
-`social-auto-upload/` 子目录为空 git 仓库（待确认用途），未注册为 git submodule。
-
 ---
 
-## 五、social-auto-upload-main/ — 多平台视频发布
+## 四、social-auto-upload-main/ — 多平台视频发布
 
 ### 入口
 
@@ -257,7 +234,7 @@ BaseVideoUploader (uploader/base_video.py)
 
 ---
 
-## 六、TrendRadar-master/ — 热点新闻聚合分析
+## 五、TrendRadar-master/ — 热点新闻聚合分析
 
 ### 入口
 

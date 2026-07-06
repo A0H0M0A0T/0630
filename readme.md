@@ -4,12 +4,11 @@
 
 ## 工作区概览
 
-这是一个 AI 辅助短视频生产与社交媒体自动化的多项目工作区，在 `D:\0703\` 下包含四个独立子项目：
+这是一个 AI 辅助短视频生产与社交媒体自动化的多项目工作区，在 `D:\0703\` 下包含三个独立子项目：
 
 | 目录 | 技术栈 | 用途 |
 |-----------|---------|---------|
 | `ai-toolbox/` | FastAPI + React 19 + SQLite | **主项目** — AI 短视频广告全链条生成 |
-| `hashtag-enricher/` | Python CLI + httpx | LLM 话题标签生成器 (YouTube/TikTok/Instagram) |
 | `social-auto-upload-main/` | Flask + Vue 3 + Playwright | 多平台视频发布自动化 |
 | `TrendRadar-master/` | Python + SQLite + LiteLLM | 热点新闻聚合分析与多渠道推送 |
 
@@ -18,7 +17,7 @@
 - **操作系统:** Windows 10 Pro，Shell 为 Git Bash（POSIX sh 语法）
 - **Python 包管理器:** `uv`（推荐），也可用 `pip`（venv）
 - **Node.js:** 可用于前端项目
-- **Python 版本要求:** `>=3.10`（hashtag-enricher、social-auto-upload），`>=3.12`（TrendRadar）
+- **Python 版本要求:** `>=3.10`（social-auto-upload），`>=3.12`（TrendRadar）
 - **⚠️ 根目录 `model_config.py` 和 `ai-toolbox/work/modules/tishici/ai_client.py` 包含硬编码 API 密钥 — 切勿提交到版本控制**
 
 ---
@@ -395,37 +394,6 @@ ai-toolbox/
 - PRESET_FALLBACKS: 3 个中文主题预设，各含 Unsplash 图片 URL
 - 前端 4 Tab: hand-drawn/recognition/lyrics/copywriting（无 workflow Tab）
 - 与 ai-toolbox/work/src 共享相同组件结构和类型定义
-
----
-
-# hashtag-enricher/
-
-Python CLI 工具，扫描 `.mp4` 文件并通过 LLM 生成平台适配的话题标签。
-
-```bash
-cd hashtag-enricher
-cp .env.example .env && cp config.yaml.example config.yaml
-uv run enrich --dir <path>                     # 扫描目录
-uv run enrich --file <file>                    # 单个文件
-uv run enrich --dir <path> --lang es           # 强制语言 (跳过检测)
-uv run enrich --dir <path> --platform tiktok   # 指定平台
-uv run enrich --dir <path> --force             # 强制重新生成
-```
-
-**架构详解:**
-- 入口: `src/hashtag_enricher/enrich.py` (~269行)
-- `enricher/config.py` (~180行): 从 .env+config.yaml 加载，lazy singleton 模式（`_LazySettings` 代理），含 `validate_tag_budget()` 交叉验证
-- `enricher/llm.py` (~428行):
-  - `detect_language(text)` → str
-  - `generate_hashtags(topic, language, platform=None)` → list[str]
-  - `detect_and_generate(topic, platform=None)` → (language, tags) ← **首选**，一次 API 调用完成检测+生成
-  - `_chat(prompt)`: httpx 持久客户端，60s 超时，2 次重试+指数退避(10s→20s)，429 时尊重 Retry-After
-  - `_parse_tags(raw)`: JSON 数组/Markdown fence/JSON 对象/正则 fallback 四层解析
-  - `_finalize_tags()`: validate_and_filter → strip duplicates → merge always_include
-- `enricher/reader.py` (~119行): `resolve_meta(mp4_path, lang_override)` → VideoMeta(topic, language_hint, source, mp4_path, json_path)，MoneyPrinterTurbo script.json 优先
-- `enricher/writer.py` (~78行): `build_hashtags_block()` + `write_hashtags()`，原子写入（mkstemp + os.replace），合并到已有 JSON
-- `enricher/postprocess.py` (~140行): `validate_and_filter()` 七步流水线（#前缀/最小长度/最大长度/禁止词/去重/限流），`check_platform_limit()` 安全网
-- 平台硬限制: YouTube 60, TikTok 5, Instagram 5
 
 ---
 

@@ -6,7 +6,7 @@
 
 ## 阶段定位
 
-当前工作区 `D:\0703` 是多项目工作区，包含 4 个独立子项目 + 1 个同构变体。本阶段目标：**整理文档与系统边界，不做代码重构。**
+当前工作区 `D:\0703` 是多项目工作区，包含 3 个独立子项目 + 1 个同构变体。本阶段目标：**整理文档与系统边界，不做代码重构。**
 
 ---
 
@@ -16,9 +16,10 @@
 |------|------|---------|
 | `ai-toolbox/work/` | AI 短视频广告全链条生成（主项目） | 独立前后端 + 独立 DB |
 | `ai-toolbox/alxuanchuan/` | 同功能 Gemini 变体 | 独立 Express 服务器 |
-| `hashtag-enricher/` | LLM 话题标签生成器 CLI | 独立 Python 包 + 独立 git 仓库 |
 | `social-auto-upload-main/` | 多平台视频发布自动化 | 独立 Flask + Vue 3 + 独立 DB |
 | `TrendRadar-master/` | 热点新闻聚合分析与推送 | 独立 Python 项目（v6.10.0） |
+
+> 话题标签生成已内嵌到 `ai-toolbox/work/modules/hashtag_enricher/`，无独立副本。
 
 详细架构见 `PROJECT_MAP.md` 和 `readme.md`。
 
@@ -28,17 +29,14 @@
 
 ### 1. 确认子项目间关系
 
-- [x] 确认 `ai-toolbox/work/modules/hashtag_enricher/` 与独立 `hashtag-enricher/` 的关系和同步策略
-  - **结论**：ai-toolbox 内嵌副本是独立 `hashtag-enricher/` 的**周期性拷贝**，非独立分支。
-  - 除 `config.py`（桥接到 `model_config.WENAN`）外，其他 5 个文件（`llm.py`/`reader.py`/`writer.py`/`postprocess.py`/`logger.py`）字节级相同。
-  - **同步方向**：独立 `hashtag-enricher/` → ai-toolbox 内嵌副本。`config.py` 需手动移植变更。
-  - `llm.py` 差异：ai-toolbox 版用 per-call `httpx.Client`（线程安全），独立版用模块级持久 client（单线程 CLI 足够）。
+- [x] ~~确认 `ai-toolbox/work/modules/hashtag_enricher/` 与独立 `hashtag-enricher/` 的关系和同步策略~~
+  - **已过时**：独立 `hashtag-enricher/` 已删除。标签生成仅保留 `ai-toolbox/work/modules/hashtag_enricher/` 一处。
 - [x] 确认 `ai-toolbox/work/` 与 `ai-toolbox/alxuanchuan/` 的维护策略
   - **结论**：功能同构但**独立维护**，代码不共享。work/ 使用 DeepSeek+GPT，alxuanchuan/ 使用 Gemini。
   - 前端组件结构相同但独立代码库。当前无同步机制，修改需手动镜像。
   - **决策**：保持现状并说明原因 — 模型供应商不同导致 prompt/API 调用差异较大，强行统一成本高。
-- [x] 确认 `hashtag-enricher/social-auto-upload/` 空 git 子模块的用途
-  - **结论**：已处理。原为嵌套空 git 子模块，`social-auto-upload/.git` 已移除。目录现为空（无任何文件）。
+- [x] ~~确认 `hashtag-enricher/social-auto-upload/` 空 git 子模块的用途~~
+  - **已过时**：随 `hashtag-enricher/` 一并删除。
 - [x] 确认 ai-toolbox 产出（视频+标签）到 social-auto-upload 发布是否有自动化衔接需求
   - **结论**：当前**无自动化管道**。用户手动从 A 取产出（视频+标签）→ 用 C 的 CLI/Web 发布。
   - 两个系统的 `--tags` 参数可接收标签但格式要求不同（A 出 JSON，C 需逗号分隔字符串）。
@@ -49,9 +47,7 @@
 
 ### 2. 标记高风险重复点（仅标记，不修改代码）
 
-- [x] **标签系统双份**：`ai-toolbox/work/modules/hashtag_enricher/` 与 `hashtag-enricher/` 功能相同、独立维护，一处修改需手动同步
-  - 已核实：内嵌版为独立版的周期性拷贝，`config.py` 是唯一有意分叉的文件。详见 Section 1.1。
-  - **决策**：保持现状。同步方向：独立版 → 内嵌版，`config.py` 手动移植。
+- [x] ~~**标签系统双份**~~ → **已解决**：独立 `hashtag-enricher/` 已删除，仅保留 `ai-toolbox/work/modules/hashtag_enricher/` 一处。
 - [x] **发布路径双份**：`social-auto-upload-main` Web 路径（`myUtils/postVideo.py`）和 CLI 路径（`sau_cli.py:dispatch()`）不共享 dispatch 逻辑
   - 已核实：CLAUDE.md 明确标注"不共享 dispatch 逻辑。修复必须镜像到两处"。
   - **决策**：保持现状。两条路径面向不同场景（Web 多账号批量、CLI 单次快速），统一 dispatch 需较大重构。

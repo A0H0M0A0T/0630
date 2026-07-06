@@ -11,13 +11,13 @@
 ```
 D:\0703\
 ├── ai-toolbox/work/              ← 系统 A：AI 短视频广告全链条生成
+│   └── modules/hashtag_enricher/  ← 话题标签生成（已内嵌于 A，无独立副本）
 ├── ai-toolbox/alxuanchuan/       ← 系统 A'：系统 A 的 Gemini 同构变体
-├── hashtag-enricher/             ← 系统 B：LLM 话题标签生成器 CLI
-├── social-auto-upload-main/      ← 系统 C：多平台视频发布自动化
-└── TrendRadar-master/            ← 系统 D：热点新闻聚合分析与推送
+├── social-auto-upload-main/      ← 系统 B：多平台视频发布自动化
+└── TrendRadar-master/            ← 系统 C：热点新闻聚合分析与推送
 ```
 
-**当前耦合程度：松耦合 / 手动协作**。4 个系统均无程序化数据管道。`start-all.bat` 一键启动所有服务窗口，但各系统独立运行，不共享运行时状态。
+**当前耦合程度：松耦合 / 手动协作**。3 个系统均无程序化数据管道。
 
 ---
 
@@ -44,17 +44,7 @@ D:\0703\
 | **前端差异** | 4 个 Tab（无 Workflow Tab），组件结构与系统 A 共享相同模式但独立代码库 |
 | **职责边界** | 同系统 A，只是模型供应商不同。**两个系统 A 和 A' 目前独立维护，代码不共享** |
 
-### 系统 B：hashtag-enricher/ — LLM 话题标签生成器 CLI
-
-| 维度 | 说明 |
-|------|------|
-| **入口** | `src/hashtag_enricher/enrich.py`（Python CLI） |
-| **核心能力** | 扫描 `.mp4` 文件 → 从文件名/MoneyPrinterTurbo script.json 提取主题 → 调 LLM 生成平台适配的话题标签 |
-| **平台限制** | YouTube 60 个、TikTok 5 个、Instagram 5 个 |
-| **独立程度** | 独立 git 仓库（有 `.git` 目录）、独立 `pyproject.toml`、独立配置（`.env` + `config.yaml`） |
-| **职责边界** | 只负责**标签生成**。不负责视频生成、不负责发布、不负责账号管理 |
-
-### 系统 C：social-auto-upload-main/ — 多平台视频发布自动化
+### 系统 B：social-auto-upload-main/ — 多平台视频发布自动化
 
 | 维度 | 说明 |
 |------|------|
@@ -66,7 +56,7 @@ D:\0703\
 | **Cookie 管理** | 新代 `cookies/{platform}_{name}.json`，旧代 `cookiesFile/{uuid}.json` |
 | **职责边界** | 只负责**账号登录 + 视频发布**。不负责视频生成、不负责标签生成、不负责文案生成 |
 
-### 系统 D：TrendRadar-master/ — 热点新闻聚合分析与推送
+### 系统 C：TrendRadar-master/ — 热点新闻聚合分析与推送
 
 | 维度 | 说明 |
 |------|------|
@@ -85,10 +75,9 @@ D:\0703\
 
 | 关系 | 文档依据 | 当前实际 |
 |------|---------|---------|
-| 系统 A → 系统 C | `ai-toolbox/work/` 第 8 步生成标签，`social-auto-upload-main/` 支持发布时传入 `--tags` | **手动**：A 产出视频文件和标签后，用户手动用 C 的 CLI 或 Web 界面发布 |
-| 系统 B → 系统 C | `hashtag-enricher/README.md` 提到 youtubeuploader 集成 | **手动**：B 生成 JSON 标签文件，用户手动传给发布流程 |
-| 系统 D → 系统 A | `TrendRadar-master/` 发现热点趋势 | **无数据连接**：D 分析热点的结果没有程序化传给 A 作为选题参考 |
-| 系统 A ← 系统 B | `ai-toolbox/work/modules/hashtag_enricher/` 内嵌了 B 的逻辑 | **功能相同但独立维护**：A 内嵌了与 B 功能相同的标签生成模块，桥接到 `model_config.WENAN`，而非调用 B 的 CLI |
+| 系统 A → 系统 B | `ai-toolbox/work/` 第 8 步生成标签，`social-auto-upload-main/` 支持发布时传入 `--tags` | **手动**：A 产出视频文件和标签后，用户手动用 B 的 CLI 或 Web 界面发布 |
+| 系统 C → 系统 A | `TrendRadar-master/` 发现热点趋势 | **无数据连接**：C 分析热点的结果没有程序化传给 A 作为选题参考 |
+| 系统 A 内嵌 | `ai-toolbox/work/modules/hashtag_enricher/` 内嵌了标签生成模块 | **已内嵌**：A 自带标签生成能力（`modules/hashtag_enricher/`），桥接到 `model_config.WENAN`，无需外部依赖 |
 | `start-all.bat` | `readme.md`（根）描述了 5 个服务窗口的一键启动 | **仅进程启动**：同时启动各服务进程，不建立运行时数据通道 |
 
 ### 禁止越界
@@ -96,9 +85,8 @@ D:\0703\
 | 系统 | 不负责 |
 |------|--------|
 | **系统 A / A'**（ai-toolbox） | 不负责账号登录、浏览器自动化、平台发布 |
-| **系统 B**（hashtag-enricher） | 不负责视频发布、账号管理、素材生成 |
-| **系统 C**（social-auto-upload） | 不负责图片生成、视频生成、剧情编排、文案生成、热点发现 |
-| **系统 D**（TrendRadar） | 不负责广告素材生成、视频发布、标签生成 |
+| **系统 B**（social-auto-upload） | 不负责图片生成、视频生成、剧情编排、文案生成、热点发现 |
+| **系统 C**（TrendRadar） | 不负责广告素材生成、视频发布、标签生成 |
 
 ---
 
@@ -106,14 +94,13 @@ D:\0703\
 
 以下重复项均基于已读取文档中的明确描述。当前阶段**仅标记，不做代码重构**。
 
-### 1. 标签系统双份
+### 1. 标签系统（已解决）
 
 | 位置 | 说明 |
 |------|------|
-| `ai-toolbox/work/modules/hashtag_enricher/` | 内嵌副本，桥接到 `model_config.WENAN` |
-| `hashtag-enricher/` | 独立 Python 包，读取 `.env` + `config.yaml` |
+| `ai-toolbox/work/modules/hashtag_enricher/` | 唯一副本，桥接到 `model_config.WENAN` |
 
-**依据**：`PROJECT_MAP.md` 和 `readme.md`（根）均标注"功能相同、独立维护"。**一处修改需手动同步到另一处**。A 的流水线第 8 步使用内嵌副本，B 作为独立 CLI 对外使用。
+独立 `hashtag-enricher/` 已移除。标签生成只有 `ai-toolbox/work/modules/hashtag_enricher/` 一处。**此项不再是重复点。**
 
 ### 2. social-auto-upload Web/CLI 两条调用路径
 
