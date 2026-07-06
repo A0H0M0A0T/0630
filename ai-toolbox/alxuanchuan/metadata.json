@@ -1,6 +1,0 @@
-{
-  "name": "极致简约 AI 全链条工作台",
-  "description": "专为啤酒品牌与精酿营销定制的全链条AI智绘平台。提供智能精酿产品图生成、竞品大片深度逆向识图、瓶身金句与诗意歌词配词、社交媒体爆款营销文案生成。",
-  "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
-}
