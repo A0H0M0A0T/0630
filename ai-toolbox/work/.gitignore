@@ -1,0 +1,15 @@
+__pycache__/
+node_modules/
+dist/
+*.pyc
+*.db
+*.db-shm
+*.db-wal
+logs/
+/.deepwork/
+.env
+legacy_backup/
+model_config.py
+static/gpt-image/app.js
+static/generated/
+modules/wenan/outputs/

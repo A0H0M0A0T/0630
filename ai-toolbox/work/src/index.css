@@ -1,0 +1,111 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;700;900&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", "Noto Sans SC", ui-sans-serif, system-ui, -apple-system, sans-serif;
+}
+
+.auth-shell {
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(110deg, rgba(255, 255, 255, 0.96), rgba(245, 247, 251, 0.92)),
+    radial-gradient(circle at 18% 18%, rgba(229, 233, 240, 0.82), transparent 34%),
+    radial-gradient(circle at 82% 22%, rgba(238, 241, 246, 0.78), transparent 38%),
+    #f7f8fb;
+}
+
+.auth-shell::before,
+.auth-shell::after {
+  content: "";
+  position: absolute;
+  inset: auto;
+  pointer-events: none;
+  opacity: 0.72;
+  filter: blur(0.2px);
+}
+
+.auth-shell::before {
+  width: 64vw;
+  height: 120vh;
+  left: 7vw;
+  top: -12vh;
+  border-radius: 50% 44% 58% 42% / 34% 58% 42% 66%;
+  border: 1px solid rgba(208, 214, 224, 0.34);
+  background: linear-gradient(135deg, rgba(235, 239, 245, 0.5), rgba(255, 255, 255, 0.08));
+  transform: rotate(8deg);
+}
+
+.auth-shell::after {
+  width: 58vw;
+  height: 110vh;
+  right: -7vw;
+  top: -4vh;
+  border-radius: 42% 58% 44% 56% / 54% 38% 62% 46%;
+  border: 1px solid rgba(216, 221, 230, 0.28);
+  background: linear-gradient(205deg, rgba(245, 247, 251, 0.74), rgba(255, 255, 255, 0.12));
+  transform: rotate(-10deg);
+}
+
+.auth-card {
+  min-height: 430px;
+}
+
+.auth-input-row {
+  display: flex;
+  min-height: 45px;
+  align-items: center;
+  gap: 0.75rem;
+  border-radius: 0.85rem;
+  background: rgba(238, 240, 244, 0.78);
+  padding: 0 1rem;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.65), inset 0 -1px 0 rgba(15, 23, 42, 0.04);
+  transition: background-color 180ms ease, box-shadow 180ms ease;
+}
+
+.auth-input-row:focus-within {
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.08), inset 0 1px 1px rgba(255, 255, 255, 0.75);
+}
+
+.auth-input {
+  min-width: 0;
+  flex: 1;
+  border: 0;
+  background: transparent;
+  color: #111827;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  outline: none;
+}
+
+.auth-input::placeholder {
+  color: #9ca3af;
+}
+
+@media (max-width: 520px) {
+  .auth-card {
+    min-height: auto;
+    border-radius: 1.65rem;
+  }
+
+  .auth-shell::before {
+    left: -34vw;
+    width: 120vw;
+  }
+
+  .auth-shell::after {
+    right: -48vw;
+    width: 120vw;
+  }
+}
+
+/* Chrome/Safari Autofill Background Override */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px white inset !important;
+  -webkit-text-fill-color: #111827 !important;
+  transition: background-color 5000s ease-in-out 0s;
+}

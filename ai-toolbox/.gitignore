@@ -1,0 +1,33 @@
+# ── Python ──
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+.venv/
+venv/
+
+# ── Node ──
+node_modules/
+
+# ── IDE ──
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# ── Secrets & Data ──
+*.db
+*.db-shm
+*.db-wal
+.env
+model_config.py
+
+# ── Generated outputs ──
+logs/
+static/generated/
+modules/wenan/outputs/
+
+# ── Misc ──
+legacy_backup/
+.DS_Store
+Thumbs.db

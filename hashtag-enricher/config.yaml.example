@@ -1,0 +1,172 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# hashtag-enricher — config.yaml.example
+# Copy this file to config.yaml and adjust as needed.
+# ─────────────────────────────────────────────────────────────────────────────
+
+# ── Target platform ──────────────────────────────────────────────────────────
+# Affects the number of generated tags and quality filters.
+#   youtube    — 3–5 tags recommended; limit 60
+#   tiktok     — 3–5 tags; limit 5
+#   instagram  — 3–5 tags; limit 5
+platform: youtube
+
+# ── Tag count ─────────────────────────────────────────────────────────────────
+# The LLM will generate between min_tags and max_tags CONTENT hashtags.
+# Note: always_include counts toward the max_tags budget.
+# Best practice 2026: use 3–5 total per post across ALL major platforms.
+min_tags: 3
+max_tags: 5
+
+# ── Tag quality filters ───────────────────────────────────────────────────────
+# Tags longer than this many characters (after the #) are silently dropped.
+# Rationale: tags >20 chars are rarely typed by real users in search.
+max_tag_length: 20
+
+# Tags in this list are NEVER included in the output, regardless of what the LLM generates.
+# Empty by default — this tool has no opinion about which tags are "bad" for
+# you. Add whatever tags you personally don't want, e.g.:
+#   banned_tags:
+#     - "#viral"
+#     - "#foryou"
+banned_tags: []
+
+# ── Always-include tags ───────────────────────────────────────────────────────
+# These tags are always prepended to every result, in this order.
+# The LLM is instructed to skip them — no duplicates or ordering issues.
+always_include:
+  - "#shorts"
+
+# ── LLM temperature ──────────────────────────────────────────────────────────
+# Set to false for reasoning models (o1, o3, o4) that reject the temperature parameter.
+supports_temperature: true
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Language detection prompt
+#
+# Only used as a fallback: if the combined prompt_detect_and_generate call
+# below fails to parse, the tool falls back to two separate calls — this
+# prompt to detect the language, then prompt_generate for the tags.
+# ─────────────────────────────────────────────────────────────────────────────
+prompt_detect_language: |
+  What language is the following text written in or intended for?
+  Reply with ONLY the language name in English (e.g. "English", "Spanish", "Russian").
+  Do not add any explanation or punctuation — just the language name.
+  Text: "{text}"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Combined language-detection + hashtag-generation prompt
+#
+# Used when the language is NOT already known (no --lang flag, no
+# video_language in script.json). Detects the language and generates the
+# hashtags in a single LLM call instead of two separate ones.
+#
+# Available placeholders:
+#   {video_subject}   — the topic string (from filename or script.json)
+#   {platform}        — youtube | tiktok | instagram
+#   {min_tags}        — from min_tags above
+#   {max_tags}        — from max_tags above
+#   {max_tag_length}  — from max_tag_length above
+#   {excluded_tags}   — always_include + banned_tags joined by ", "
+#
+# Must return a JSON object: {"language": "...", "tags": ["#tag1", ...]}
+# ─────────────────────────────────────────────────────────────────────────────
+prompt_detect_and_generate: |
+  You are a {platform} short-form video SEO specialist.
+
+  Video topic: "{video_subject}"
+
+  Task 1: Detect the language this content is in or intended for.
+  Task 2: Generate between {min_tags} and {max_tags} SEO hashtags for {platform}.
+
+  Hashtag rules:
+  - Primary tags (2–3): highly specific to THIS video's unique angle
+  - Secondary tags (1–2): niche-specific, medium competition
+  - All tags in the detected language
+  - Lowercase only, no CamelCase
+  - Preserve diacritics (e.g. #recuperación, #astronomía)
+  - Max {max_tag_length} characters per tag (after #)
+  - Tags to EXCLUDE (already included automatically): {excluded_tags}
+
+  Respond ONLY with a JSON object — no markdown, no explanation:
+  {{"language": "English", "tags": ["#tag1", "#tag2", "#tag3"]}}
+
+  Few-shot examples:
+  topic "ostriches never bury heads" →
+  {{"language": "English", "tags": ["#ostrichfacts", "#ostrichmyths", "#birdmyths", "#animalscience"]}}
+  topic "nadie puede oír tus gritos en el espacio" →
+  {{"language": "Spanish", "tags": ["#silencioenelespacio", "#sonidoenelespacio", "#vacíoespacial", "#curiosidadescósmicas"]}}
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Hashtag generation prompt
+#
+# Used when the language is already known (--lang flag, or video_language in
+# an existing script.json) — generates tags only, in a single call.
+#
+# Available placeholders:
+#   {video_subject}   — the topic string (from filename or script.json)
+#   {language}        — detected or overridden language name
+#   {platform}        — youtube | tiktok | instagram
+#   {min_tags}        — from min_tags above
+#   {max_tags}        — from max_tags above
+#   {max_tag_length}  — from max_tag_length above
+#   {excluded_tags}   — always_include + banned_tags joined by ", "
+# ─────────────────────────────────────────────────────────────────────────────
+prompt_generate: |
+  You are a {platform} short-form video SEO specialist applying 2026 best practices.
+
+  Video topic: "{video_subject}"
+  Target language: {language}
+  Target platform: {platform}
+
+  Generate between {min_tags} and {max_tags} CONTENT hashtags.
+
+  ── PRIORITY ORDER (most to least important) ──────────────────────────────────
+
+  PRIMARY tags (generate 2–3):
+    Highly specific to THIS video's unique angle.
+    Ask yourself: "What would someone type into {platform} search to find exactly this video?"
+    Good examples:
+      topic "ostriches don't bury heads"    → #ostrichfacts  #ostrichmyths  #birdmyths
+      topic "sound impossible in space"     → #silencioenelespacio  #sonidoenelespacio
+      topic "opossum involuntarily faints"  → #involuntaryfainting  #opossumfacts
+    Bad examples (do NOT generate these):
+      ❌ #animals  ❌ #nature  ❌ #wildlife  ❌ #science  ❌ #espacio  ❌ #ciencia
+
+  SECONDARY tags (generate 1–2):
+    Describe the broader niche — medium competition level (not mega-popular, not obscure).
+    Think: "What community or sub-topic does this video belong to?"
+    Good examples: #animalscience  #astronomía  #curiosidadesdeluniverso  #animalbehavior
+
+  ── STRICT FORMATTING RULES ──────────────────────────────────────────────────
+  - All hashtags in {language} — never mix languages
+  - Every hashtag starts with #, no spaces inside
+  - ALL LOWERCASE — no CamelCase, no capitals
+  - Preserve native diacritics: #recuperación, #astronomía, #ñoño (NOT stripped)
+  - Max {max_tag_length} characters per hashtag (counting only the part after #)
+  - No duplicate tags
+
+  ── QUALITY RULES ────────────────────────────────────────────────────────────
+  - Relevance over volume — a niche tag beats a mega-tag every time
+  - NO off-topic tags (don't add #astronautas to a video about sound in a vacuum)
+  - NO awkward keyword-stuffed compounds (#didyouknowostriches, #funfactsaboutanimals)
+
+  Tags to EXCLUDE entirely (they are added automatically — do NOT include them):
+  {excluded_tags}
+
+  ── OUTPUT FORMAT ────────────────────────────────────────────────────────────
+  Return ONLY a valid JSON array of strings — no markdown fences, no explanation, nothing else.
+
+  Few-shot examples:
+
+  English / youtube / topic "ostriches don't bury heads":
+  ["#ostrichfacts", "#ostrichmyths", "#birdmyths", "#animalscience"]
+
+  Spanish / youtube / topic "sound impossible in space":
+  ["#silencioenelespacio", "#sonidoenelespacio", "#vacíoespacial", "#curiosidadescósmicas"]
+
+  English / tiktok / topic "opossum involuntarily faints":
+  ["#opossumfacts", "#involuntaryfainting", "#animalbiology", "#wildlifefacts"]
+
+  Spanish / instagram / topic "moon fits inside Russia":
+  ["#lalunacaberusia", "#curiosidadesdeluniverso", "#astronomía", "#datoscuriosos"]
+
