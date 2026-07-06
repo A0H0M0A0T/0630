@@ -39,9 +39,8 @@ stop-all.bat    →  全部停止
 | AI-Toolbox 前端 | 5173 | Vite + React 19 |
 | 上传服务 后端 | 5409 | Flask (Python) |
 | 上传服务 前端 | 5174 | Vite + Vue 3 + Element Plus |
-| AI-宣传 | 3000 | Express + React (tsx) |
 
-> ⚠️ 上传服务前端端口：本表写 5174，`social-auto-upload-main/CLAUDE.md` 写 5173，待核实实际配置后统一。
+> **端口说明**：`vite.config.js` 默认端口为 **5173**。`start-all.bat` 通过 `npx vite --port 5174` 显式覆盖为 5174。两个端口均为正确值，取决于启动方式：直接 `npm run dev` → 5173，通过 `start-all.bat` → 5174。`CLAUDE.md` 写的是 5173（对应 `npm run dev`）。
 
 各子项目 README/CLAUDE 分布：
 
