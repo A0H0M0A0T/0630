@@ -12,7 +12,6 @@
 D:\0703\
 ├── ai-toolbox/work/              ← 系统 A：AI 短视频广告全链条生成
 │   └── modules/hashtag_enricher/  ← 话题标签生成（已内嵌于 A，无独立副本）
-├── ai-toolbox/alxuanchuan/       ← 系统 A'：系统 A 的 Gemini 同构变体
 ├── social-auto-upload-main/      ← 系统 B：多平台视频发布自动化
 └── TrendRadar-master/            ← 系统 C：热点新闻聚合分析与推送
 ```
@@ -33,16 +32,6 @@ D:\0703\
 | **辅助模块** | AI 识图（GPT-4o Vision）、AI 文案批量生成、AI 绘图（提示词生成 + 图片生成）、词牌匹配（已开发但未挂载） |
 | **数据存储** | 3 个 SQLite DB（`auth.db` / `workflows.db` / `history.db`）+ 文件系统资产（`static/product/` / `static/generated/` / `static/video/`） |
 | **职责边界** | 只负责**素材生成**（图片 + 视频提示词 + 口播文案 + 标签） |
-
-### 系统 A'：ai-toolbox/alxuanchuan/ — Express + Gemini 独立服务器
-
-| 维度 | 说明 |
-|------|------|
-| **入口** | `server.ts`（Express，端口 3000）+ `src/main.tsx`（React 前端） |
-| **核心能力** | 与系统 A 功能同构，但后端 AI 模型使用 **Google Gemini**（非 DeepSeek+GPT） |
-| **API 端点** | 6 个 Gemini 路由：generate-prompt / generate-image / deconstruct-visual / recognize-image / match-lyrics / explosive-copywriting |
-| **前端差异** | 4 个 Tab（无 Workflow Tab），组件结构与系统 A 共享相同模式但独立代码库 |
-| **职责边界** | 同系统 A，只是模型供应商不同。**两个系统 A 和 A' 目前独立维护，代码不共享** |
 
 ### 系统 B：social-auto-upload-main/ — 多平台视频发布自动化
 
@@ -84,7 +73,7 @@ D:\0703\
 
 | 系统 | 不负责 |
 |------|--------|
-| **系统 A / A'**（ai-toolbox） | 不负责账号登录、浏览器自动化、平台发布 |
+| **系统 A**（ai-toolbox） | 不负责账号登录、浏览器自动化、平台发布 |
 | **系统 B**（social-auto-upload） | 不负责图片生成、视频生成、剧情编排、文案生成、热点发现 |
 | **系统 C**（TrendRadar） | 不负责广告素材生成、视频发布、标签生成 |
 
