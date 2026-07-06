@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>抖音酒类热门话题 & 标签 — S101 苦荞精酿</title>
+<style>
+  :root {
+    --bg: #0f0f0f;
+    --card: #1a1a1a;
+    --border: #2a2a2a;
+    --text: #e0e0e0;
+    --muted: #888;
+    --accent: #f5a623;
+    --red: #ff4757;
+    --green: #2ed573;
+    --blue: #1e90ff;
+    --tag-bg: #1a1a2e;
+    --tag-border: #333;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    line-height: 1.6;
+    padding: 40px 20px;
+  }
+  .container { max-width: 900px; margin: 0 auto; }
+  h1 {
+    font-size: 2rem; font-weight: 800; text-align: center; margin-bottom: 8px;
+    background: linear-gradient(135deg, var(--accent), #ff6b35);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .subtitle { text-align: center; color: var(--muted); margin-bottom: 40px; font-size: 0.9rem; }
+  .section { margin-bottom: 36px; }
+  .section-title {
+    font-size: 1.2rem; font-weight: 700; margin-bottom: 16px; padding-bottom: 8px;
+    border-bottom: 2px solid var(--accent); display: flex; align-items: center; gap: 8px;
+  }
+  .trend-grid { display: flex; flex-direction: column; gap: 10px; }
+  .trend-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 16px 20px; display: flex; align-items: center; gap: 14px;
+    transition: border-color 0.2s;
+  }
+  .trend-card:hover { border-color: var(--accent); }
+  .trend-rank {
+    width: 40px; height: 40px; border-radius: 10px; display: flex;
+    align-items: center; justify-content: center; font-weight: 800; font-size: 0.85rem;
+    flex-shrink: 0;
+  }
+  .rank-hot { background: rgba(245,166,35,0.15); color: var(--accent); }
+  .rank-fire { background: rgba(255,71,87,0.15); color: var(--red); }
+  .trend-info { flex: 1; min-width: 0; }
+  .trend-title { font-weight: 600; font-size: 0.95rem; margin-bottom: 4px; }
+  .trend-meta { font-size: 0.78rem; color: var(--muted); display: flex; gap: 12px; }
+  .platform-badge {
+    display: inline-block; padding: 2px 8px; border-radius: 4px;
+    font-size: 0.72rem; font-weight: 600;
+  }
+  .plat-douyin { background: rgba(30,144,255,0.15); color: var(--blue); }
+  .plat-weibo { background: rgba(255,71,87,0.12); color: var(--red); }
+  .plat-zhihu { background: rgba(46,213,115,0.12); color: var(--green); }
+  .plat-bilibili { background: rgba(251,114,153,0.15); color: #fb7299; }
+  .plat-other { background: rgba(136,136,136,0.12); color: var(--muted); }
+
+  .signals { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
+  .signal-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 20px; border-left: 3px solid var(--accent);
+  }
+  .signal-idx { font-size: 0.75rem; color: var(--accent); font-weight: 700; margin-bottom: 6px; }
+  .signal-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 6px; }
+  .signal-desc { font-size: 0.82rem; color: var(--muted); }
+
+  .tag-groups { display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 14px; }
+  .tag-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; }
+  .tag-topic { font-weight: 700; font-size: 0.88rem; margin-bottom: 12px; color: var(--accent); }
+  .tag-list { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag-item {
+    background: var(--tag-bg); border: 1px solid var(--tag-border); border-radius: 20px;
+    padding: 4px 14px; font-size: 0.8rem; color: #ccc; cursor: pointer;
+    transition: all 0.2s;
+  }
+  .tag-item:hover { border-color: var(--accent); color: var(--accent); background: rgba(245,166,35,0.08); }
+  .tag-item.copy-hint { cursor: pointer; }
+  .tag-item.copied { border-color: var(--green) !important; color: var(--green) !important; }
+
+  .copy-all {
+    display: inline-block; margin-top: 8px; font-size: 0.72rem; color: var(--blue);
+    cursor: pointer; user-select: none;
+  }
+  .copy-all:hover { text-decoration: underline; }
+
+  .tips { display: flex; flex-direction: column; gap: 10px; }
+  .tip-item {
+    background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+    padding: 14px 18px; font-size: 0.85rem; display: flex; gap: 10px; align-items: flex-start;
+  }
+  .tip-num { color: var(--accent); font-weight: 800; flex-shrink: 0; }
+
+  .footer { text-align: center; color: var(--muted); font-size: 0.75rem; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border); }
+
+  .toast {
+    position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+    background: var(--green); color: #000; padding: 10px 24px; border-radius: 8px;
+    font-weight: 600; font-size: 0.85rem; z-index: 999; opacity: 0; transition: opacity 0.3s;
+  }
+  .toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <h1>🍺 抖音酒类热门话题 &amp; 标签分析</h1>
+  <p class="subtitle">基于 TrendRadar 11 平台热点 + AI 标签生成 &nbsp;|&nbsp; 2026-07-03 &nbsp;|&nbsp; 目标产品：S101 苦荞精酿啤酒</p>
+
+  <!-- ═══ 近期酒类热点 ═══ -->
+  <div class="section">
+    <div class="section-title">🔥 近7天全平台酒类热搜</div>
+    <div class="trend-grid">
+      <div class="trend-card">
+        <div class="trend-rank rank-fire">#9</div>
+        <div class="trend-info">
+          <div class="trend-title">酒业负责人：感觉年轻人都不喝白酒了</div>
+          <div class="trend-meta">
+            <span class="platform-badge plat-other">今日头条</span> 2026-07-03 &nbsp;|&nbsp; 两次登榜（12/23 #20, 12/24 #9）
+          </div>
+        </div>
+      </div>
+
+      <div class="trend-card">
+        <div class="trend-rank rank-fire">#20</div>
+        <div class="trend-info">
+          <div class="trend-title">便利店调酒怎么又火了</div>
+          <div class="trend-meta">
+            <span class="platform-badge plat-weibo">微博</span> 2026-07-03 &nbsp;|&nbsp; 居家DIY调酒场景持续升温
+          </div>
+        </div>
+      </div>
+
+      <div class="trend-card">
+        <div class="trend-rank rank-hot">#11</div>
+        <div class="trend-info">
+          <div class="trend-title">2025为自己喝彩</div>
+          <div class="trend-meta">
+            <span class="platform-badge plat-douyin">抖音</span> 2026-07-03 &nbsp;|&nbsp; 情绪营销，"喝"字联动
+          </div>
+        </div>
+      </div>
+
+      <div class="trend-card">
+        <div class="trend-rank rank-hot">#18</div>
+        <div class="trend-info">
+          <div class="trend-title">如何评价东北近期兴起的馄饨酒馆？</div>
+          <div class="trend-meta">
+            <span class="platform-badge plat-zhihu">知乎</span> 2026-07-03 &nbsp;|&nbsp; "餐饮+酒"融合新业态
+          </div>
+        </div>
+      </div>
+
+      <div class="trend-card">
+        <div class="trend-rank rank-hot">#21</div>
+        <div class="trend-info">
+          <div class="trend-title">中国酒是如何诞生的</div>
+          <div class="trend-meta">
+            <span class="platform-badge plat-bilibili">B站</span> 2026-07-03 &nbsp;|&nbsp; 酒文化科普内容热度上升
+          </div>
+        </div>
+      </div>
+
+      <div class="trend-card">
+        <div class="trend-rank rank-hot">#29</div>
+        <div class="trend-info">
+          <div class="trend-title">蛇年茅台一日暴涨230元 酒商：涨疯了</div>
+          <div class="trend-meta">
+            <span class="platform-badge plat-other">百度</span> 2026-07-03 &nbsp;|&nbsp; 白酒投资 vs 精酿消费分化明显
+          </div>
+        </div>
+      </div>
+
+      <div class="trend-card">
+        <div class="trend-rank rank-hot">#7</div>
+        <div class="trend-info">
+          <div class="trend-title">险资加仓港股：青岛啤酒股份等获长线布局</div>
+          <div class="trend-meta">
+            <span class="platform-badge plat-other">财联社</span> 2026-07-03 &nbsp;|&nbsp; 资本市场看好啤酒板块
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ 三大趋势信号 ═══ -->
+  <div class="section">
+    <div class="section-title">📡 三大核心趋势信号</div>
+    <div class="signals">
+      <div class="signal-card">
+        <div class="signal-idx">信号 01</div>
+        <div class="signal-title">🍶 "年轻人不喝白酒"成共识</div>
+        <div class="signal-desc">
+          7天内 2 次登上头条热榜（#9 + #20），话题总阅读量预估过亿。<br>
+          <strong>→ S101 切入点：</strong>"不喝白酒的年轻人都在喝什么？这罐苦荞精酿可能是答案。"
+        </div>
+      </div>
+      <div class="signal-card">
+        <div class="signal-idx">信号 02</div>
+        <div class="signal-title">🍹 "便利店调酒"又火了</div>
+        <div class="signal-desc">
+          微博热搜 #20，居家DIY、便利店+啤酒的混搭喝法成为社交货币。<br>
+          <strong>→ S101 切入点：</strong>"不用调，拉环一拉就是好精酿——比便利店调酒更方便。"
+        </div>
+      </div>
+      <div class="signal-card">
+        <div class="signal-idx">信号 03</div>
+        <div class="signal-title">🏮 "馄饨酒馆"新业态</div>
+        <div class="signal-desc">
+          知乎热议，东北"餐饮+酒"融合模式出圈，证明"吃+喝"场景是流量密码。<br>
+          <strong>→ S101 切入点：</strong>烧烤摊/火锅店/大排档场景植入，"配餐精酿"定位。
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ AI标签 ═══ -->
+  <div class="section">
+    <div class="section-title">🏷️ AI 生成抖音专属标签（DeepSeek 生成，5 标签/组，含 #shorts）</div>
+
+    <div class="tag-groups" id="tagGroups">
+      <div class="tag-card" data-group="精酿产品">
+        <div class="tag-topic">📦 方向一：S101 苦荞精酿产品展示</div>
+        <div class="tag-list">
+          <span class="tag-item">#shorts</span>
+          <span class="tag-item">#苦荞精酿</span>
+          <span class="tag-item">#拉环铝罐1l</span>
+          <span class="tag-item">#纯粮发酵28天</span>
+          <span class="tag-item">#精酿啤酒测评</span>
+        </div>
+        <span class="copy-all" onclick="copyGroup(this)">📋 复制整组</span>
+      </div>
+
+      <div class="tag-card" data-group="微醺经济">
+        <div class="tag-topic">📈 方向二：蹭"年轻人不喝白酒"热点</div>
+        <div class="tag-list">
+          <span class="tag-item">#shorts</span>
+          <span class="tag-item">#精酿啤酒趋势</span>
+          <span class="tag-item">#微醺经济</span>
+          <span class="tag-item">#年轻人喝什么</span>
+          <span class="tag-item">#聚会必备啤酒</span>
+        </div>
+        <span class="copy-all" onclick="copyGroup(this)">📋 复制整组</span>
+      </div>
+
+      <div class="tag-card" data-group="居家调酒">
+        <div class="tag-topic">🍹 方向三：蹭"便利店调酒"热点</div>
+        <div class="tag-list">
+          <span class="tag-item">#shorts</span>
+          <span class="tag-item">#便利店调酒</span>
+          <span class="tag-item">#居家调酒</span>
+          <span class="tag-item">#啤酒新喝法</span>
+          <span class="tag-item">#夏日冰啤酒</span>
+        </div>
+        <span class="copy-all" onclick="copyGroup(this)">📋 复制整组</span>
+      </div>
+
+      <div class="tag-card" data-group="烧烤聚会">
+        <div class="tag-topic">🍖 方向四：烧烤+聚会场景</div>
+        <div class="tag-list">
+          <span class="tag-item">#shorts</span>
+          <span class="tag-item">#烧烤啤酒搭配</span>
+          <span class="tag-item">#国产精酿推荐</span>
+          <span class="tag-item">#聚会畅饮好酒</span>
+          <span class="tag-item">#精酿啤酒推荐</span>
+        </div>
+        <span class="copy-all" onclick="copyGroup(this)">📋 复制整组</span>
+      </div>
+    </div>
+
+    <!-- 全部标签合并 -->
+    <div class="tag-card" style="margin-top:14px; border-color: var(--accent);" data-group="全部">
+      <div class="tag-topic">🚀 全部标签合并（一键复制）</div>
+      <div class="tag-list" id="allTags">
+        <span class="tag-item">#shorts</span>
+        <span class="tag-item">#苦荞精酿</span>
+        <span class="tag-item">#拉环铝罐1l</span>
+        <span class="tag-item">#纯粮发酵28天</span>
+        <span class="tag-item">#精酿啤酒测评</span>
+        <span class="tag-item">#精酿啤酒趋势</span>
+        <span class="tag-item">#微醺经济</span>
+        <span class="tag-item">#年轻人喝什么</span>
+        <span class="tag-item">#聚会必备啤酒</span>
+        <span class="tag-item">#便利店调酒</span>
+        <span class="tag-item">#居家调酒</span>
+        <span class="tag-item">#啤酒新喝法</span>
+        <span class="tag-item">#夏日冰啤酒</span>
+        <span class="tag-item">#烧烤啤酒搭配</span>
+        <span class="tag-item">#国产精酿推荐</span>
+        <span class="tag-item">#聚会畅饮好酒</span>
+        <span class="tag-item">#精酿啤酒推荐</span>
+      </div>
+      <span class="copy-all" onclick="copyGroup(this)">📋 一键复制全部 17 个标签（去重后 16 个）</span>
+    </div>
+  </div>
+
+  <!-- ═══ 内容策略 ═══ -->
+  <div class="section">
+    <div class="section-title">💡 抖音内容策略建议</div>
+    <div class="tips">
+      <div class="tip-item">
+        <span class="tip-num">1</span>
+        <span><strong>场景化 > 品类词：</strong>当前抖音热榜没有直接含"酒"字的话题，说明平台内容趋向场景化。用"便利店""烧烤""聚会""微醺"等场景标签比"啤酒""白酒"品类标签更有效。</span>
+      </div>
+      <div class="tip-item">
+        <span class="tip-num">2</span>
+        <span><strong>蹭"年轻人不喝白酒"：</strong>这是 7 天内两次上榜的超级话题。S101 可以打"年轻人的第一罐精酿"或"比白酒更适合聚会"的角度。</span>
+      </div>
+      <div class="tip-item">
+        <span class="tip-num">3</span>
+        <span><strong>抖音 5 标签限制：</strong>上面每组恰好 5 个标签，直接复制使用。<code>#shorts</code> 放在第一位是平台最佳实践。</span>
+      </div>
+      <div class="tip-item">
+        <span class="tip-num">4</span>
+        <span><strong>差异化卖点：</strong>"拉环盖一拉就开""1L大罐够喝""28天慢发酵"是 S101 区别于其他啤酒的独有卖点，标签中已融入。</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    数据来源：TrendRadar v6.10.0 &nbsp;|&nbsp; 标签生成：DeepSeek via hashtag-enricher &nbsp;|&nbsp; 生成时间：2026-07-03 19:32 CST
+  </div>
+</div>
+
+<div class="toast" id="toast">✅ 已复制到剪贴板</div>
+
+<script>
+function copyGroup(el) {
+  const card = el.closest('.tag-card');
+  const tags = Array.from(card.querySelectorAll('.tag-item')).map(t => t.textContent.trim());
+  const unique = [...new Set(tags)];
+  const text = unique.join(' ');
+
+  navigator.clipboard.writeText(text).then(() => {
+    const toast = document.getElementById('toast');
+    toast.textContent = '✅ 已复制 ' + unique.length + ' 个标签';
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 1800);
+  });
+}
+
+// Click individual tag to copy it
+document.querySelectorAll('.tag-item').forEach(tag => {
+  tag.addEventListener('click', function() {
+    const text = this.textContent.trim();
+    navigator.clipboard.writeText(text).then(() => {
+      this.classList.add('copied');
+      this.textContent = '✓ 已复制';
+      setTimeout(() => {
+        this.classList.remove('copied');
+        this.textContent = text;
+      }, 1200);
+    });
+  });
+});
+</script>
+</body>
+</html>

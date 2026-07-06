@@ -1,0 +1,50 @@
+[
+  {
+    "file": "D:/0703/social-auto-upload-main/myUtils/postVideo.py",
+    "line": 86,
+    "summary": "post_video_xhs passes the entire publish_datetimes list as the publish_date argument to XiaoHongShuVideo instead of indexing with publish_datetimes[index], unlike post_video_DouYin, post_video_tencent, and post_video_ks which all correctly index",
+    "scenario": "When enableTimer=True, generate_schedule_time_next_day returns a list of schedule datetimes. XiaoHongShuVideo.__init__ receives this list where it expects datetime|int. The list is passed to validate_publish_date which does isinstance(datetime) check and fails, or if it slips through, later strftime calls crash with AttributeError: 'list' object has no attribute 'strftime'"
+  },
+  {
+    "file": "D:/0703/social-auto-upload-main/uploader/douyin_uploader/main.py",
+    "line": 181,
+    "summary": "_wait_for_douyin_login references undefined variables original_url (line 181), saw_2fa (line 184), and i (line 185, used in f-string but loop variable is underscore) — none are defined in this function scope",
+    "scenario": "During a CLI douyin login via sau_cli.py dispatch -> login_douyin_account -> douyin_setup -> douyin_cookie_gen -> _wait_for_douyin_login, when the page URL changes (e.g., 2FA SMS prompt appears), the check `page.url != original_url` raises NameError, crashing the login flow"
+  },
+  {
+    "file": "D:/0703/social-auto-upload-main/utils/files_times.py",
+    "line": 41,
+    "summary": "generate_schedule_time_next_day has parameter order (total_videos, videos_per_day, daily_times, timestamps, start_days) but all callers in postVideo.py pass start_days as the 4th positional argument which maps to timestamps, not start_days",
+    "scenario": "When a user sets startDays to a value > 0 from the frontend, generate_schedule_time_next_day receives it as timestamps=True, returning Unix timestamp integers instead of datetime objects. validate_publish_date in base_video.py then raises TypeError('publish_date must be datetime or 0'), crashing the upload"
+  },
+  {
+    "file": "D:/0703/social-auto-upload-main/sau_frontend/src/views/PublishCenter.vue",
+    "line": 553,
+    "summary": "Frontend sends dailyTimes as an array of 'HH:MM' strings (e.g. ['10:00', '14:30']) but backend function generate_schedule_time_next_day in utils/files_times.py expects integer hours (e.g. [10, 14]) and performs arithmetic `hour - current_time.hour` which crashes with TypeError on string operands",
+    "scenario": "When a user enables scheduling and selects daily publish times from the frontend, dailyTimes contains strings like '10:00'. These flow through sau_backend.py -> postVideo.py -> generate_schedule_time_next_day, where line 74 does `timedelta(hours=hour - current_time.hour)` causing TypeError: unsupported operand type(s) for -: 'str' and 'int'"
+  },
+  {
+    "file": "D:/0703/social-auto-upload-main/myUtils/postVideo.py",
+    "line": 28,
+    "summary": "post_video_DouYin, post_video_tencent, and post_video_xhs compute publish_datetimes when enableTimer=True but never pass publish_strategy to the uploader constructors, so the default 'immediate' strategy causes validate_base_args to override publish_date to 0, silently discarding the schedule",
+    "scenario": "A user schedules a video for future publishing via the frontend (enableTimer=True, startDays=0). post_video_DouYin computes publish_datetimes[index] as a datetime but passes it to DouYinVideo without setting publish_strategy='scheduled'. validate_base_args sees publish_strategy='immediate' and sets publish_date=0. The video publishes immediately instead of at the scheduled time. Only Kuaishou works because KSVideo defaults publish_strategy to None (auto-detected from publish_date)"
+  },
+  {
+    "file": "D:/0703/social-auto-upload-main/sau_backend.py",
+    "line": 553,
+    "summary": "postVideoBatch route for DouYin (type 3) does not extract thumbnail from request data and passes productLink as the 10th positional arg to post_video_DouYin (which maps to thumbnail_path), and productTitle as productLink — off-by-one because thumbnail_path is missing from the call",
+    "scenario": "When batch-publishing to DouYin via the /postVideoBatch endpoint, the productLink value is passed as thumbnail_path to DouYinVideo. DouYinVideo.validate_upload_args calls validate_image_file on it, which tries to resolve the product URL string as a file path and raises FileNotFoundError. productTitle defaults to '' and is never set"
+  },
+  {
+    "file": "D:/0703/social-auto-upload-main/sau_backend.py",
+    "line": 395,
+    "summary": "The on_close callback that removes entries from active_queues is defined but never registered on the Flask SSE Response object via response.call_on_close(), so active_queues entries leak indefinitely on SSE connection close",
+    "scenario": "Each time a login SSE connection is established and then closed (user navigates away, refreshes, or closes browser), the Queue instance for that connection id remains in the active_queues dict forever because the cleanup callback is dead code. Over time, active_queues grows unbounded, leaking memory"
+  },
+  {
+    "file": "D:/0703/social-auto-upload-main/myUtils/login.py",
+    "line": 30,
+    "summary": "Four async functions (douyin_cookie_gen, get_tencent_cookie, get_ks_cookie, xiaohongshu_cookie_gen) exist in both myUtils/login.py and their respective uploader/*/main.py modules with completely different signatures and return values, creating a maintenance hazard where importing the wrong variant silently breaks callers",
+    "scenario": "myUtils/login.py versions take (id, status_queue) for SSE login and return None (signaling via queue), while uploader versions take (account_file, qrcode_callback, ...) and return a dict with 'success' key. If sau_backend.py were refactored to import get_tencent_cookie from uploader/tencent_uploader/main.py instead of myUtils/login, the call `loop.run_until_complete(get_tencent_cookie(id, status_queue))` would receive keyword arguments it doesn't expect, raising TypeError"
+  }
+]

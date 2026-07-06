@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍺 抖音酒类热门话题 & 标签大全 — 2026-07-03</title>
+<style>
+  :root {
+    --bg: #0f0f0f;
+    --card: #1a1a1a;
+    --border: #2a2a2a;
+    --text: #e0e0e0;
+    --muted: #888;
+    --accent: #ff5a1f;
+    --hot: #ff3b30;
+    --mid: #f59e0b;
+    --new: #10b981;
+    --douyin: #fe2c55;
+    --beer: #f5a623;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    padding: 24px;
+  }
+  .container { max-width: 960px; margin: 0 auto; }
+
+  h1 {
+    font-size: 2rem; text-align: center; margin-bottom: 8px;
+    background: linear-gradient(135deg, #fe2c55, #f5a623);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .subtitle { text-align: center; color: var(--muted); margin-bottom: 32px; font-size: 0.95rem; }
+
+  .card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 20px 24px; margin-bottom: 20px;
+  }
+  .card h2 { font-size: 1.25rem; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .card h3 { font-size: 1.05rem; margin: 16px 0 8px; color: var(--beer); }
+
+  table { width: 100%; border-collapse: collapse; }
+  th, td { padding: 8px 12px; text-align: left; border-bottom: 1px solid var(--border); }
+  th { color: var(--muted); font-weight: 500; font-size: 0.85rem; }
+  tr:hover { background: rgba(255,255,255,0.03); }
+
+  a {
+    color: var(--douyin); text-decoration: none;
+    transition: all 0.15s;
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin: 1px;
+  }
+  a:hover {
+    background: rgba(254,44,85,0.15);
+    color: #ff6b8a;
+    text-decoration: underline;
+  }
+
+  .rank { display: inline-block; width: 28px; text-align: center; font-weight: 700; }
+  .rank.top3 { color: var(--accent); }
+
+  .badge {
+    display: inline-block; font-size: 0.75rem; padding: 2px 8px;
+    border-radius: 10px; margin-left: 4px; font-weight: 600;
+  }
+  .badge.hot { background: rgba(255,59,48,0.15); color: var(--hot); }
+  .badge.mid { background: rgba(245,158,11,0.15); color: var(--mid); }
+  .badge.new { background: rgba(16,185,129,0.15); color: var(--new); }
+
+  .tag-grid {
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .tag-grid a { font-size: 0.92rem; }
+
+  .formula {
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 8px; padding: 12px 16px; margin-bottom: 10px;
+  }
+  .formula .num {
+    display: inline-block; width: 28px; height: 28px; line-height: 28px;
+    text-align: center; border-radius: 50%;
+    background: linear-gradient(135deg, #fe2c55, #f5a623);
+    color: #fff; font-weight: 700; font-size: 0.85rem; margin-right: 8px;
+  }
+  .formula .title { font-weight: 600; }
+  .formula .detail { color: var(--muted); font-size: 0.88rem; margin-top: 4px; }
+
+  .s101-box {
+    background: linear-gradient(135deg, rgba(245,166,35,0.08), rgba(254,44,85,0.08));
+    border: 1px solid rgba(245,166,35,0.3);
+  }
+  .copy-btn {
+    display: inline-block; cursor: pointer; font-size: 0.8rem;
+    padding: 4px 12px; border-radius: 6px; border: 1px solid var(--beer);
+    background: transparent; color: var(--beer); margin-left: 8px;
+    transition: all 0.2s;
+  }
+  .copy-btn:hover { background: rgba(245,166,35,0.15); }
+
+  .hotlist-item {
+    padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.04);
+    display: flex; align-items: baseline; gap: 10px;
+  }
+  .hotlist-item .idx { color: var(--muted); min-width: 28px; text-align: right; font-size: 0.85rem; }
+
+  .footer { text-align: center; color: #555; font-size: 0.8rem; margin-top: 32px; }
+  .footer a { color: #666; font-size: 0.8rem; padding: 0; }
+
+  .warning-box {
+    background: rgba(254,44,85,0.08); border: 1px solid rgba(254,44,85,0.25);
+    border-radius: 8px; padding: 10px 16px; margin: 12px 0;
+    font-size: 0.9rem; color: #ff6b8a;
+  }
+
+  .platform-tag {
+    font-size: 0.75rem; padding: 1px 6px; border-radius: 4px;
+    background: rgba(255,255,255,0.06); color: var(--muted);
+    margin-right: 6px;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<h1>🍺 抖音酒类热门话题 & 标签大全</h1>
+<p class="subtitle">数据来源：TrendRadar 实时热点 + AI 标签引擎 ｜ 2026年7月3日</p>
+
+<!-- ====== 抖音实时热搜 TOP30 ====== -->
+<div class="card">
+  <h2>🔥 抖音实时热搜 TOP30</h2>
+  <p style="color:var(--muted);font-size:0.85rem;margin-bottom:12px">全网热点一览，下半部分蓝色高亮为可蹭热点</p>
+  <div class="warning-box" style="margin-bottom: 16px;">
+    ⚠️ 今日热搜无纯酒类话题 — <strong>酒类赛道正是蓝海窗口</strong>！可蹭：C罗/世界杯（看球喝酒场景）
+  </div>
+  <div class="hotlist-item">
+    <span class="idx rank top3">#1</span>
+    <a href="https://www.douyin.com/search/张曙光王刚晋升上将军衔" target="_blank" rel="noopener">张曙光王刚晋升上将军衔</a>
+  </div>
+  <div class="hotlist-item">
+    <span class="idx rank top3">#2</span>
+    <a href="https://www.douyin.com/search/G2让二追三战胜TES" target="_blank" rel="noopener">G2让二追三战胜TES</a>
+  </div>
+  <div class="hotlist-item">
+    <span class="idx rank top3">#3</span>
+    <a href="https://www.douyin.com/search/全国一体化算力网建设加速" target="_blank" rel="noopener">全国一体化算力网建设加速</a>
+  </div>
+  <div class="hotlist-item">
+    <span class="idx">#4</span>
+    <a href="https://www.douyin.com/search/中国男篮主场迎战日本男篮" target="_blank" rel="noopener">中国男篮主场迎战日本男篮</a>
+  </div>
+  <div class="hotlist-item">
+    <span class="idx">#5</span>
+    <a href="https://www.douyin.com/search/新闻联播" target="_blank" rel="noopener">新闻联播</a>
+  </div>
+  <div class="hotlist-item">
+    <span class="idx">#6</span>
+    <a href="https://www.douyin.com/search/把童年搬进森林深处" target="_blank" rel="noopener">把童年搬进森林深处</a>
+  </div>
+  <div class="hotlist-item">
+    <span class="idx">#7</span>
+    <a href="https://www.douyin.com/search/各地压箱底桃子大公开" target="_blank" rel="noopener">各地压箱底桃子大公开</a>
+  </div>
+  <div class="hotlist-item">
+    <span class="idx">#8</span>
+    <a href="https://www.douyin.com/search/台风美莎克登陆海南陵水" target="_blank" rel="noopener">台风美莎克登陆海南陵水</a>
+  </div>
+  <div class="hotlist-item">
+    <span class="idx">#9</span>
+    <a href="https://www.douyin.com/search/依兰爱情故事拉丁版跳出高级感" target="_blank" rel="noopener">依兰爱情故事拉丁版跳出高级感</a>
+  </div>
+  <div class="hotlist-item">
+    <span class="idx">#10</span>
+    <a href="https://www.douyin.com/search/懂球大咖陪你展望世界杯八强席位" target="_blank" rel="noopener">懂球大咖陪你展望世界杯八强席位</a>
+  </div>
+  <div class="hotlist-item">
+    <span class="idx">#11</span>
+    <a href="https://www.douyin.com/search/海军上校方明执行任务时牺牲" target="_blank" rel="noopener">海军上校方明执行任务时牺牲</a>
+  </div>
+  <div class="hotlist-item">
+    <span class="idx">#12</span>
+    <a href="https://www.douyin.com/search/油价创下年内最大单次降幅" target="_blank" rel="noopener">油价创下年内最大单次降幅</a>
+  </div>
+  <div class="hotlist-item">
+    <span class="idx">#13</span>
+    <a href="https://www.douyin.com/search/高考第七课属于我们的安可曲" target="_blank" rel="noopener">高考第七课属于我们的安可曲</a>
+  </div>
+  <div class="hotlist-item">
+    <span class="idx">#14</span>
+    <a href="https://www.douyin.com/search/温瑞博蒯曼不敌韩国组合" target="_blank" rel="noopener">温瑞博蒯曼1:3不敌韩国组合</a>
+  </div>
+  <div class="hotlist-item">
+    <span class="idx">#15</span>
+    <a href="https://www.douyin.com/search/赛格坠楼事件谣言被罚" target="_blank" rel="noopener">3人发布涉赛格坠楼事件谣言被罚</a>
+  </div>
+  <div class="hotlist-item">
+    <span class="idx">#16</span>
+    <a href="https://www.douyin.com/search/三角洲主播巅峰赛S2开启" target="_blank" rel="noopener">三角洲主播巅峰赛S2开启</a>
+  </div>
+  <div class="hotlist-item">
+    <span class="idx">#17</span>
+    <a href="https://www.douyin.com/search/电影特立独行今日上映" target="_blank" rel="noopener">电影特立独行今日上映</a>
+  </div>
+  <div class="hotlist-item">
+    <span class="idx">#18</span>
+    <a href="https://www.douyin.com/search/王楚钦孙颖莎晋级混双决赛" target="_blank" rel="noopener">王楚钦孙颖莎晋级混双决赛</a>
+  </div>
+  <div class="hotlist-item">
+    <span class="idx">#19</span>
+    <a href="https://www.douyin.com/search/阿根廷vs佛得角前瞻" target="_blank" rel="noopener">阿根廷vs佛得角前瞻</a>
+  </div>
+  <div class="hotlist-item">
+    <span class="idx">#20</span>
+    <a href="https://www.douyin.com/search/C罗莫德里奇是对手更是挚友" target="_blank" rel="noopener">C罗莫德里奇是对手更是挚友</a>
+  </div>
+  <!-- 🍺 C罗看球喝酒蹭热点 -->
+  <div class="hotlist-item" style="background:rgba(245,166,35,0.08);border-radius:4px;">
+    <span class="idx">#21</span>
+    <a href="https://www.douyin.com/search/再见魔笛" target="_blank" rel="noopener">再见魔笛</a>
+    <span class="badge new">🍺 蹭</span>
+  </div>
+  <div class="hotlist-item" style="background:rgba(245,166,35,0.08);border-radius:4px;">
+    <span class="idx">#25</span>
+    <a href="https://www.douyin.com/search/C罗打破淘汰赛零进球纪录" target="_blank" rel="noopener">C罗打破淘汰赛零进球纪录</a>
+    <span class="badge new">🍺 看球喝酒</span>
+  </div>
+  <div class="hotlist-item" style="background:rgba(245,166,35,0.08);border-radius:4px;">
+    <span class="idx">#26</span>
+    <a href="https://www.douyin.com/search/C罗魔笛相拥看哭了" target="_blank" rel="noopener">C罗魔笛相拥看哭了</a>
+    <span class="badge new">🍺 看球喝酒</span>
+  </div>
+  <!-- 其余 -->
+  <div class="hotlist-item">
+    <span class="idx">#22</span>
+    <a href="https://www.douyin.com/search/王源上海演唱会" target="_blank" rel="noopener">王源上海演唱会</a>
+  </div>
+  <div class="hotlist-item">
+    <span class="idx">#23</span>
+    <a href="https://www.douyin.com/search/终于给这个视频找到bgm了" target="_blank" rel="noopener">终于给这个视频找到bgm了</a>
+  </div>
+  <div class="hotlist-item">
+    <span class="idx">#24</span>
+    <a href="https://www.douyin.com/search/入学第一天vs最后一天" target="_blank" rel="noopener">入学第一天vs最后一天</a>
+  </div>
+  <div class="hotlist-item">
+    <span class="idx">#27</span>
+    <a href="https://www.douyin.com/search/当你觉得身边的人没品味时" target="_blank" rel="noopener">当你觉得身边的人没品味时</a>
+  </div>
+  <div class="hotlist-item">
+    <span class="idx">#28</span>
+    <a href="https://www.douyin.com/search/李荣浩苏州演唱会" target="_blank" rel="noopener">李荣浩苏州演唱会</a>
+  </div>
+  <div class="hotlist-item">
+    <span class="idx">#29</span>
+    <a href="https://www.douyin.com/search/这是夏天的第一个夏天" target="_blank" rel="noopener">这是夏天的第一个夏天</a>
+  </div>
+  <div class="hotlist-item">
+    <span class="idx">#30</span>
+    <a href="https://www.douyin.com/search/我已加入松弛派对" target="_blank" rel="noopener">我已加入松弛派对</a>
+  </div>
+</div>
+
+<!-- ====== 全平台酒类新闻 ====== -->
+<div class="card">
+  <h2>📰 全平台酒类热点新闻</h2>
+  <table>
+    <tr>
+      <td><span class="platform-tag">财联社</span></td>
+      <td><span class="rank top3">#7</span></td>
+      <td><a href="https://www.cls.cn/searchPage?keyword=青岛啤酒" target="_blank" rel="noopener">二季度以来险资加仓港股提速：青岛啤酒股份获长线布局</a></td>
+    </tr>
+    <tr>
+      <td><span class="platform-tag">今日头条</span></td>
+      <td><span class="rank top3">#9</span></td>
+      <td><a href="https://www.douyin.com/search/高空吃牛排品红酒" target="_blank" rel="noopener">6人4000米高空围桌吃牛排品红酒</a></td>
+    </tr>
+    <tr>
+      <td><span class="platform-tag">今日头条</span></td>
+      <td>#21</td>
+      <td><a href="https://www.douyin.com/search/电影啤酒瓶糖做的" target="_blank" rel="noopener">电影里打架戏用的啤酒瓶竟是糖做的</a></td>
+    </tr>
+  </table>
+</div>
+
+<!-- ====== 10大热门话题 ====== -->
+<div class="card">
+  <h2>🎯 抖音酒类 10 大热门话题</h2>
+  <div class="tag-grid">
+    <a href="https://www.douyin.com/search/夏日微醺日记" target="_blank" rel="noopener">#夏日微醺日记</a>
+    <a href="https://www.douyin.com/search/精酿品鉴指南" target="_blank" rel="noopener">#精酿品鉴指南</a>
+    <a href="https://www.douyin.com/search/调酒师日常" target="_blank" rel="noopener">#调酒师日常</a>
+    <a href="https://www.douyin.com/search/今夜来一杯" target="_blank" rel="noopener">#今夜来一杯</a>
+    <a href="https://www.douyin.com/search/酒鬼地图" target="_blank" rel="noopener">#酒鬼地图</a>
+    <a href="https://www.douyin.com/search/微醺晚安计划" target="_blank" rel="noopener">#微醺晚安计划</a>
+    <a href="https://www.douyin.com/search/啤酒猎人" target="_blank" rel="noopener">#啤酒猎人</a>
+    <a href="https://www.douyin.com/search/白酒品鉴局" target="_blank" rel="noopener">#白酒品鉴局</a>
+    <a href="https://www.douyin.com/search/威士忌时刻" target="_blank" rel="noopener">#威士忌时刻</a>
+    <a href="https://www.douyin.com/search/便利店调酒" target="_blank" rel="noopener">#便利店调酒</a>
+  </div>
+</div>
+
+<!-- ====== 精酿啤酒标签 ====== -->
+<div class="card">
+  <h2>🍺 精酿啤酒标签</h2>
+  <div class="tag-grid">
+    <a href="https://www.douyin.com/search/精酿啤酒" target="_blank" rel="noopener">#精酿啤酒 <span class="badge hot">🔥高</span></a>
+    <a href="https://www.douyin.com/search/精酿推荐" target="_blank" rel="noopener">#精酿推荐 <span class="badge hot">🔥高</span></a>
+    <a href="https://www.douyin.com/search/精酿探店" target="_blank" rel="noopener">#精酿探店 <span class="badge hot">🔥高</span></a>
+    <a href="https://www.douyin.com/search/国产精酿" target="_blank" rel="noopener">#国产精酿 <span class="badge mid">⭐中</span></a>
+    <a href="https://www.douyin.com/search/精酿品鉴" target="_blank" rel="noopener">#精酿品鉴 <span class="badge mid">⭐中</span></a>
+    <a href="https://www.douyin.com/search/IPA啤酒" target="_blank" rel="noopener">#IPA <span class="badge mid">⭐中</span></a>
+    <a href="https://www.douyin.com/search/精酿酒吧" target="_blank" rel="noopener">#精酿酒吧 <span class="badge mid">⭐中</span></a>
+    <a href="https://www.douyin.com/search/精酿入门" target="_blank" rel="noopener">#精酿入门 <span class="badge new">💡新锐</span></a>
+    <a href="https://www.douyin.com/search/世涛啤酒" target="_blank" rel="noopener">#世涛 <span class="badge new">💡新锐</span></a>
+    <a href="https://www.douyin.com/search/酸啤" target="_blank" rel="noopener">#酸啤 <span class="badge new">💡新锐</span></a>
+  </div>
+</div>
+
+<!-- ====== 白酒/洋酒标签 ====== -->
+<div class="card">
+  <h2>🥃 白酒 / 洋酒标签</h2>
+  <div class="tag-grid">
+    <a href="https://www.douyin.com/search/白酒" target="_blank" rel="noopener">#白酒 <span class="badge hot">🔥高</span></a>
+    <a href="https://www.douyin.com/search/威士忌" target="_blank" rel="noopener">#威士忌 <span class="badge hot">🔥高</span></a>
+    <a href="https://www.douyin.com/search/茅台" target="_blank" rel="noopener">#茅台 <span class="badge hot">🔥高</span></a>
+    <a href="https://www.douyin.com/search/酱香型白酒" target="_blank" rel="noopener">#酱香型 <span class="badge mid">⭐中</span></a>
+    <a href="https://www.douyin.com/search/威士忌品鉴" target="_blank" rel="noopener">#威士忌品鉴 <span class="badge mid">⭐中</span></a>
+    <a href="https://www.douyin.com/search/中国白酒" target="_blank" rel="noopener">#中国白酒 <span class="badge mid">⭐中</span></a>
+    <a href="https://www.douyin.com/search/白兰地" target="_blank" rel="noopener">#白兰地 <span class="badge mid">⭐中</span></a>
+    <a href="https://www.douyin.com/search/洋酒品鉴" target="_blank" rel="noopener">#洋酒 <span class="badge mid">⭐中</span></a>
+    <a href="https://www.douyin.com/search/单一麦芽威士忌" target="_blank" rel="noopener">#单一麦芽 <span class="badge new">💡新锐</span></a>
+    <a href="https://www.douyin.com/search/干邑" target="_blank" rel="noopener">#干邑 <span class="badge new">💡新锐</span></a>
+  </div>
+</div>
+
+<!-- ====== 调酒/鸡尾酒标签 ====== -->
+<div class="card">
+  <h2>🍹 调酒 / 鸡尾酒标签</h2>
+  <div class="tag-grid">
+    <a href="https://www.douyin.com/search/调酒" target="_blank" rel="noopener">#调酒 <span class="badge hot">🔥高</span></a>
+    <a href="https://www.douyin.com/search/鸡尾酒" target="_blank" rel="noopener">#鸡尾酒 <span class="badge hot">🔥高</span></a>
+    <a href="https://www.douyin.com/search/自制鸡尾酒" target="_blank" rel="noopener">#自制鸡尾酒 <span class="badge hot">🔥高</span></a>
+    <a href="https://www.douyin.com/search/家庭调酒" target="_blank" rel="noopener">#家庭调酒 <span class="badge mid">⭐中</span></a>
+    <a href="https://www.douyin.com/search/调酒教程" target="_blank" rel="noopener">#调酒教程 <span class="badge mid">⭐中</span></a>
+    <a href="https://www.douyin.com/search/金酒" target="_blank" rel="noopener">#金酒 <span class="badge mid">⭐中</span></a>
+    <a href="https://www.douyin.com/search/伏特加" target="_blank" rel="noopener">#伏特加 <span class="badge mid">⭐中</span></a>
+    <a href="https://www.douyin.com/search/经典鸡尾酒" target="_blank" rel="noopener">#经典鸡尾酒 <span class="badge new">💡新锐</span></a>
+    <a href="https://www.douyin.com/search/微醺调酒" target="_blank" rel="noopener">#微醺调酒 <span class="badge new">💡新锐</span></a>
+    <a href="https://www.douyin.com/search/朗姆酒" target="_blank" rel="noopener">#朗姆酒 <span class="badge new">💡新锐</span></a>
+  </div>
+</div>
+
+<!-- ====== 酒吧探店标签 ====== -->
+<div class="card">
+  <h2>🏮 酒吧探店 / 氛围标签</h2>
+  <div class="tag-grid">
+    <a href="https://www.douyin.com/search/酒吧探店" target="_blank" rel="noopener">#酒吧探店 <span class="badge hot">🔥高</span></a>
+    <a href="https://www.douyin.com/search/酒吧打卡" target="_blank" rel="noopener">#酒吧打卡 <span class="badge hot">🔥高</span></a>
+    <a href="https://www.douyin.com/search/宝藏酒吧" target="_blank" rel="noopener">#宝藏酒吧 <span class="badge mid">⭐中</span></a>
+    <a href="https://www.douyin.com/search/网红酒吧" target="_blank" rel="noopener">#网红酒吧 <span class="badge mid">⭐中</span></a>
+    <a href="https://www.douyin.com/search/酒吧氛围" target="_blank" rel="noopener">#酒吧氛围 <span class="badge mid">⭐中</span></a>
+    <a href="https://www.douyin.com/search/精酿酒吧探店" target="_blank" rel="noopener">#精酿酒吧 <span class="badge mid">⭐中</span></a>
+    <a href="https://www.douyin.com/search/夜生活" target="_blank" rel="noopener">#夜生活 <span class="badge mid">⭐中</span></a>
+    <a href="https://www.douyin.com/search/隐藏酒吧" target="_blank" rel="noopener">#隐藏酒吧 <span class="badge new">💡新锐</span></a>
+    <a href="https://www.douyin.com/search/清吧" target="_blank" rel="noopener">#清吧 <span class="badge new">💡新锐</span></a>
+    <a href="https://www.douyin.com/search/喝酒好去处" target="_blank" rel="noopener">#喝酒好去处 <span class="badge new">💡新锐</span></a>
+  </div>
+</div>
+
+<!-- ====== 微醺/生活方式标签 ====== -->
+<div class="card">
+  <h2>🌙 微醺 / 生活方式标签</h2>
+  <div class="tag-grid">
+    <a href="https://www.douyin.com/search/微醺" target="_blank" rel="noopener">#微醺 <span class="badge hot">🔥高</span></a>
+    <a href="https://www.douyin.com/search/微醺时刻" target="_blank" rel="noopener">#微醺时刻 <span class="badge hot">🔥高</span></a>
+    <a href="https://www.douyin.com/search/今夜来一杯" target="_blank" rel="noopener">#今夜来一杯 <span class="badge hot">🔥高</span></a>
+    <a href="https://www.douyin.com/search/喝酒日常" target="_blank" rel="noopener">#喝酒日常 <span class="badge hot">🔥高</span></a>
+    <a href="https://www.douyin.com/search/微醺晚安" target="_blank" rel="noopener">#微醺晚安 <span class="badge mid">⭐中</span></a>
+    <a href="https://www.douyin.com/search/微醺日记" target="_blank" rel="noopener">#微醺日记 <span class="badge mid">⭐中</span></a>
+    <a href="https://www.douyin.com/search/微醺氛围感" target="_blank" rel="noopener">#微醺氛围 <span class="badge mid">⭐中</span></a>
+    <a href="https://www.douyin.com/search/微醺生活" target="_blank" rel="noopener">#微醺生活 <span class="badge new">💡新锐</span></a>
+    <a href="https://www.douyin.com/search/微醺穿搭" target="_blank" rel="noopener">#微醺穿搭 <span class="badge new">💡新锐</span></a>
+    <a href="https://www.douyin.com/search/微醺小酒" target="_blank" rel="noopener">#微醺小酒 <span class="badge new">💡新锐</span></a>
+  </div>
+</div>
+
+<!-- ====== 通用流量标签 ====== -->
+<div class="card">
+  <h2>🚀 通用流量大标签</h2>
+  <div class="tag-grid">
+    <a href="https://www.douyin.com/search/喝酒" target="_blank" rel="noopener">#喝酒 <span class="badge hot">🔥高</span></a>
+    <a href="https://www.douyin.com/search/酒" target="_blank" rel="noopener">#酒 <span class="badge hot">🔥高</span></a>
+    <a href="https://www.douyin.com/search/微醺" target="_blank" rel="noopener">#微醺 <span class="badge hot">🔥高</span></a>
+    <a href="https://www.douyin.com/search/品酒" target="_blank" rel="noopener">#品酒 <span class="badge hot">🔥高</span></a>
+    <a href="https://www.douyin.com/search/调酒" target="_blank" rel="noopener">#调酒 <span class="badge hot">🔥高</span></a>
+    <a href="https://www.douyin.com/search/精酿" target="_blank" rel="noopener">#精酿 <span class="badge hot">🔥高</span></a>
+    <a href="https://www.douyin.com/search/夜宵" target="_blank" rel="noopener">#夜宵 <span class="badge hot">🔥高</span></a>
+    <a href="https://www.douyin.com/search/微醺日常" target="_blank" rel="noopener">#微醺日常 <span class="badge mid">⭐中</span></a>
+    <a href="https://www.douyin.com/search/酒鬼" target="_blank" rel="noopener">#酒鬼 <span class="badge mid">⭐中</span></a>
+    <a href="https://www.douyin.com/search/微醺女孩" target="_blank" rel="noopener">#微醺女孩 <span class="badge mid">⭐中</span></a>
+  </div>
+</div>
+
+<!-- ====== 内容爆款公式 ====== -->
+<div class="card">
+  <h2>🎬 2026 夏季酒类内容爆款公式</h2>
+  <div class="formula">
+    <span class="num">1</span>
+    <span class="title">30秒教你在家复刻酒吧爆款鸡尾酒</span>
+    <div class="detail">夏日水果 + 冰杯 + 低成本材料 ｜ BGM: 轻快 Lo-fi</div>
+  </div>
+  <div class="formula">
+    <span class="num">2</span>
+    <span class="title">精酿评测：10元 vs 100元盲猜哪杯更好喝？</span>
+    <div class="detail">朋友互动 + 花字对比 + 悬念音效 ｜ 适合互动率爆发</div>
+  </div>
+  <div class="formula">
+    <span class="num">3</span>
+    <span class="title">下班后一个人的微醺仪式感</span>
+    <div class="detail">灯光/音乐/酒杯特写 + 独白治愈文案 ｜ BGM: Chill 纯音乐</div>
+  </div>
+  <div class="formula">
+    <span class="num">4</span>
+    <span class="title">2026夏季必喝5款精酿</span>
+    <div class="detail">冰镇出镜 + 气泡特写 + 真实口感描述 ｜ BGM: 律动电子乐</div>
+  </div>
+  <div class="formula">
+    <span class="num">5</span>
+    <span class="title">便利店饮料调出清吧级鸡尾酒挑战</span>
+    <div class="detail">步骤快剪 + 成品展示 + 试喝反应 ｜ BGM: 卡点节奏</div>
+  </div>
+</div>
+
+<!-- ====== S101 专属组合 ====== -->
+<div class="card s101-box">
+  <h2>🎯 S101 苦荞精酿 专属标签组合</h2>
+  <p style="color:var(--muted);font-size:0.85rem;margin-bottom:12px">
+    推荐 5 主标签 + 3 备用标签（轮换 AB 测试），点击即可跳转抖音搜索
+  </p>
+  <div style="margin-bottom:12px;">
+    <strong>主标签：</strong>
+    <div class="tag-grid" style="margin-top:6px;">
+      <a href="https://www.douyin.com/search/精酿啤酒" target="_blank" rel="noopener">#精酿啤酒</a>
+      <a href="https://www.douyin.com/search/国产精酿" target="_blank" rel="noopener">#国产精酿</a>
+      <a href="https://www.douyin.com/search/微醺" target="_blank" rel="noopener">#微醺</a>
+      <a href="https://www.douyin.com/search/今夜来一杯" target="_blank" rel="noopener">#今夜来一杯</a>
+      <a href="https://www.douyin.com/search/苦荞啤酒" target="_blank" rel="noopener">#苦荞啤酒</a>
+    </div>
+  </div>
+  <div style="margin-bottom:12px;">
+    <strong>备用标签（AB测试）：</strong>
+    <div class="tag-grid" style="margin-top:6px;">
+      <a href="https://www.douyin.com/search/精酿推荐" target="_blank" rel="noopener">#精酿推荐</a>
+      <a href="https://www.douyin.com/search/微醺时刻" target="_blank" rel="noopener">#微醺时刻</a>
+      <a href="https://www.douyin.com/search/喝酒日常" target="_blank" rel="noopener">#喝酒日常</a>
+      <a href="https://www.douyin.com/search/精酿品鉴" target="_blank" rel="noopener">#精酿品鉴</a>
+      <a href="https://www.douyin.com/search/酒吧探店" target="_blank" rel="noopener">#酒吧探店</a>
+      <a href="https://www.douyin.com/search/夏日微醺" target="_blank" rel="noopener">#夏日微醺</a>
+    </div>
+  </div>
+  <div class="warning-box" style="margin-top:12px;">
+    💡 <strong>蹭热点建议</strong>：7月3日抖音被 C罗/世界杯 霸屏，用 <a href="https://www.douyin.com/search/世界杯喝酒" target="_blank" rel="noopener">#世界杯喝酒</a> + <a href="https://www.douyin.com/search/看球必备" target="_blank" rel="noopener">#看球必备</a> + 酒类标签组合，可借流量红利。
+  </div>
+  <div id="copy-target" style="display:none;">#精酿啤酒 #国产精酿 #微醺 #今夜来一杯 #苦荞啤酒 #精酿推荐 #微醺时刻 #喝酒日常</div>
+  <button class="copy-btn" onclick="navigator.clipboard.writeText(document.getElementById('copy-target').innerText).then(()=>{this.textContent='✅ 已复制!';setTimeout(()=>{this.textContent='📋 一键复制全部标签'},1500)})">📋 一键复制全部标签</button>
+</div>
+
+<!-- ====== 今日可蹭热点 ====== -->
+<div class="card">
+  <h2>🏀 今日可蹭热点（看球 + 喝酒）</h2>
+  <div class="tag-grid">
+    <a href="https://www.douyin.com/search/世界杯" target="_blank" rel="noopener">#世界杯 <span class="badge hot">🔥爆</span></a>
+    <a href="https://www.douyin.com/search/C罗" target="_blank" rel="noopener">#C罗 <span class="badge hot">🔥爆</span></a>
+    <a href="https://www.douyin.com/search/看球必备" target="_blank" rel="noopener">#看球必备</a>
+    <a href="https://www.douyin.com/search/世界杯喝酒" target="_blank" rel="noopener">#世界杯喝酒</a>
+    <a href="https://www.douyin.com/search/熬夜看球" target="_blank" rel="noopener">#熬夜看球</a>
+    <a href="https://www.douyin.com/search/球赛配啤酒" target="_blank" rel="noopener">#球赛配啤酒</a>
+    <a href="https://www.douyin.com/search/朋友聚会" target="_blank" rel="noopener">#朋友聚会</a>
+    <a href="https://www.douyin.com/search/夏日夜晚" target="_blank" rel="noopener">#夏日夜晚</a>
+  </div>
+</div>
+
+<div class="footer">
+  <p>
+    数据引擎：<a href="https://github.com" target="_blank" rel="noopener">TrendRadar</a> 实时热点聚合 ·
+    AI 标签生成：DeepSeek V4-Pro ·
+    生成时间：2026-07-03 19:32 CST
+  </p>
+  <p>点击任意标签可跳转到抖音搜索页</p>
+</div>
+
+</div>
+</body>
+</html>

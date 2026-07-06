@@ -1,0 +1,36 @@
+# ── Python ──
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+.venv/
+venv/
+
+# ── Node ──
+node_modules/
+
+# ── IDE / Editor ──
+.idea/
+.vscode/
+*.swp
+*.swo
+.kilo/
+
+# ── Secrets & API Keys ──
+*.db
+*.db-shm
+*.db-wal
+.env
+model_config.py
+
+# ── Generated outputs ──
+logs/
+static/generated/
+
+# ── Windows ──
+*.lnk
+Thumbs.db
+
+# ── Misc ──
+.DS_Store
+*.log

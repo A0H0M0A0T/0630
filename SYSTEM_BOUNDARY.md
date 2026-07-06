@@ -1,0 +1,172 @@
+# SYSTEM_BOUNDARY.md
+
+本文件描述 `D:\0703` 工作区各独立系统的职责边界和协作关系。
+
+**信息来源**：基于 `PROJECT_MAP.md`、`readme.md`（根）、各子项目 `CLAUDE.md` 和 `README.md` 的实际内容归纳，不依赖口头描述或目录名推测。
+
+---
+
+## 一、系统总览
+
+```
+D:\0703\
+├── ai-toolbox/work/              ← 系统 A：AI 短视频广告全链条生成
+├── ai-toolbox/alxuanchuan/       ← 系统 A'：系统 A 的 Gemini 同构变体
+├── hashtag-enricher/             ← 系统 B：LLM 话题标签生成器 CLI
+├── social-auto-upload-main/      ← 系统 C：多平台视频发布自动化
+└── TrendRadar-master/            ← 系统 D：热点新闻聚合分析与推送
+```
+
+**当前耦合程度：松耦合 / 手动协作**。4 个系统均无程序化数据管道。`start-all.bat` 一键启动所有服务窗口，但各系统独立运行，不共享运行时状态。
+
+---
+
+## 二、各系统职责边界
+
+### 系统 A：ai-toolbox/work/ — AI 短视频广告全链条生成
+
+| 维度 | 说明 |
+|------|------|
+| **入口** | `server.py`（FastAPI，端口 8000）+ `src/main.tsx`（React 19 前端，端口 5173） |
+| **核心能力** | 输入产品图 → 8 步流水线（剧情分镜 → 关键帧提示词 → GPT Image-2 生图 → AI 评分 → 口播文案 → 视频提示词组装 → 视频提交 → 标签生成） |
+| **目标产品** | S101 苦荞精酿啤酒（黄色铝罐 + 黑色 S 标识 + 银色拉环） |
+| **辅助模块** | AI 识图（GPT-4o Vision）、AI 文案批量生成、AI 绘图（提示词生成 + 图片生成）、词牌匹配（已开发但未挂载） |
+| **数据存储** | 3 个 SQLite DB（`auth.db` / `workflows.db` / `history.db`）+ 文件系统资产（`static/product/` / `static/generated/` / `static/video/`） |
+| **职责边界** | 只负责**素材生成**（图片 + 视频提示词 + 口播文案 + 标签） |
+
+### 系统 A'：ai-toolbox/alxuanchuan/ — Express + Gemini 独立服务器
+
+| 维度 | 说明 |
+|------|------|
+| **入口** | `server.ts`（Express，端口 3000）+ `src/main.tsx`（React 前端） |
+| **核心能力** | 与系统 A 功能同构，但后端 AI 模型使用 **Google Gemini**（非 DeepSeek+GPT） |
+| **API 端点** | 6 个 Gemini 路由：generate-prompt / generate-image / deconstruct-visual / recognize-image / match-lyrics / explosive-copywriting |
+| **前端差异** | 4 个 Tab（无 Workflow Tab），组件结构与系统 A 共享相同模式但独立代码库 |
+| **职责边界** | 同系统 A，只是模型供应商不同。**两个系统 A 和 A' 目前独立维护，代码不共享** |
+
+### 系统 B：hashtag-enricher/ — LLM 话题标签生成器 CLI
+
+| 维度 | 说明 |
+|------|------|
+| **入口** | `src/hashtag_enricher/enrich.py`（Python CLI） |
+| **核心能力** | 扫描 `.mp4` 文件 → 从文件名/MoneyPrinterTurbo script.json 提取主题 → 调 LLM 生成平台适配的话题标签 |
+| **平台限制** | YouTube 60 个、TikTok 5 个、Instagram 5 个 |
+| **独立程度** | 独立 git 仓库（有 `.git` 目录）、独立 `pyproject.toml`、独立配置（`.env` + `config.yaml`） |
+| **职责边界** | 只负责**标签生成**。不负责视频生成、不负责发布、不负责账号管理 |
+
+### 系统 C：social-auto-upload-main/ — 多平台视频发布自动化
+
+| 维度 | 说明 |
+|------|------|
+| **入口** | `sau_backend.py`（Flask，端口 5409）+ `sau_cli.py`（CLI）+ `sau_frontend/`（Vue 3，端口 5174） |
+| **核心能力** | 使用 Playwright（patchright）驱动 Chromium 浏览器，自动化 8 个平台的 Web 上传流程：抖音、B站、小红书、快手、视频号、百家号、TikTok、YouTube |
+| **两代代码** | 新代 `uploader/`（async/await + dataclass，优先使用） + 旧代 `myUtils/`（同步包装，遗留） |
+| **两条调用路径** | Web 路径（Flask → myUtils/postVideo.py → uploader/）和 CLI 路径（sau_cli.py:dispatch() → uploader/）**不共享 dispatch 逻辑** |
+| **数据存储** | SQLite `db/database.db`：`user_info` 表（账号）+ `file_records` 表（上传记录） |
+| **Cookie 管理** | 新代 `cookies/{platform}_{name}.json`，旧代 `cookiesFile/{uuid}.json` |
+| **职责边界** | 只负责**账号登录 + 视频发布**。不负责视频生成、不负责标签生成、不负责文案生成 |
+
+### 系统 D：TrendRadar-master/ — 热点新闻聚合分析与推送
+
+| 维度 | 说明 |
+|------|------|
+| **入口** | `trendradar/__main__.py`（NewsAnalyzer 主编排器）+ `mcp_server/server.py`（FastMCP 2.0） |
+| **核心能力** | 从 11 个中文平台 + RSS 源爬取热榜 → 关键词/AI 筛选 → 生成 HTML 报告 → 推送到 9+ 通知渠道（飞书/钉钉/企微/Telegram/邮件/Slack/Bark/ntfy/通用 Webhook） |
+| **AI 能力** | AI 分析（5 段报告）、AI 筛选（自然语言兴趣描述 → 标签分类）、AI 翻译（多语言推送） |
+| **MCP 服务器** | 26 个工具 + 4 个资源，stdio/HTTP 双传输模式 |
+| **数据存储** | SQLite `output/news/{date}.db` + `output/rss/{date}.db`，可选 S3 远程同步 |
+| **职责边界** | 只负责**热点发现 + 分析 + 推送**。不负责广告素材生成、不负责视频发布、不负责账号管理 |
+
+---
+
+## 三、系统间协作关系
+
+### 当前状态：松耦合 / 手动协作
+
+| 关系 | 文档依据 | 当前实际 |
+|------|---------|---------|
+| 系统 A → 系统 C | `ai-toolbox/work/` 第 8 步生成标签，`social-auto-upload-main/` 支持发布时传入 `--tags` | **手动**：A 产出视频文件和标签后，用户手动用 C 的 CLI 或 Web 界面发布 |
+| 系统 B → 系统 C | `hashtag-enricher/README.md` 提到 youtubeuploader 集成 | **手动**：B 生成 JSON 标签文件，用户手动传给发布流程 |
+| 系统 D → 系统 A | `TrendRadar-master/` 发现热点趋势 | **无数据连接**：D 分析热点的结果没有程序化传给 A 作为选题参考 |
+| 系统 A ← 系统 B | `ai-toolbox/work/modules/hashtag_enricher/` 内嵌了 B 的逻辑 | **功能相同但独立维护**：A 内嵌了与 B 功能相同的标签生成模块，桥接到 `model_config.WENAN`，而非调用 B 的 CLI |
+| `start-all.bat` | `readme.md`（根）描述了 5 个服务窗口的一键启动 | **仅进程启动**：同时启动各服务进程，不建立运行时数据通道 |
+
+### 禁止越界
+
+| 系统 | 不负责 |
+|------|--------|
+| **系统 A / A'**（ai-toolbox） | 不负责账号登录、浏览器自动化、平台发布 |
+| **系统 B**（hashtag-enricher） | 不负责视频发布、账号管理、素材生成 |
+| **系统 C**（social-auto-upload） | 不负责图片生成、视频生成、剧情编排、文案生成、热点发现 |
+| **系统 D**（TrendRadar） | 不负责广告素材生成、视频发布、标签生成 |
+
+---
+
+## 四、高风险重复点
+
+以下重复项均基于已读取文档中的明确描述。当前阶段**仅标记，不做代码重构**。
+
+### 1. 标签系统双份
+
+| 位置 | 说明 |
+|------|------|
+| `ai-toolbox/work/modules/hashtag_enricher/` | 内嵌副本，桥接到 `model_config.WENAN` |
+| `hashtag-enricher/` | 独立 Python 包，读取 `.env` + `config.yaml` |
+
+**依据**：`PROJECT_MAP.md` 和 `readme.md`（根）均标注"功能相同、独立维护"。**一处修改需手动同步到另一处**。A 的流水线第 8 步使用内嵌副本，B 作为独立 CLI 对外使用。
+
+### 2. social-auto-upload Web/CLI 两条调用路径
+
+| 路径 | 入口 | dispatch 位置 |
+|------|------|-------------|
+| Web | `POST /postVideo` → `myUtils/postVideo.py` | `sau_backend.py` |
+| CLI | `sau <platform> upload-video` | `sau_cli.py:dispatch()` |
+
+**依据**：`social-auto-upload-main/CLAUDE.md` 明确写"两个路径**不共享 dispatch 逻辑**。修复必须镜像到两处"。
+
+### 3. model_config 多份
+
+| 位置 | 说明 |
+|------|------|
+| `D:\0703\model_config.py` | 根目录 |
+| `ai-toolbox/work/model_config.py` | 主项目目录 |
+| `ai-toolbox/work/modules/tishici/ai_client.py` | 模块内嵌 |
+
+**依据**：`readme.md`（根）和 `PROJECT_MAP.md` 均标注含硬编码 API 密钥，"切勿提交到版本控制"。三处需保持同步。
+
+### 4. sanitize 规则 — 已抽离共享（非重复项，已验证）
+
+sanitize 规则已抽离为三层架构，不存在重复：
+
+| 文件 | 变量 | 条目 | 说明 |
+|------|------|------|------|
+| `ai-toolbox/work/modules/common/sanitize.py` | `COMMON_SANITIZE_MAP` | 42 条 | 共享基础规则（品牌名/颜色/容器/合规措辞） |
+| `ai-toolbox/work/modules/orchestrator/engine.py` | `_ENGINE_EXTRA_SANITIZE` | 16 条 | engine 专有扩展（与 COMMON 不重叠） |
+| `ai-toolbox/work/modules/video_prompt/assembler.py` | `_ASSEMBLER_EXTRA_SANITIZE` | 3 条 | assembler 专有扩展（与 COMMON 不重叠） |
+
+所有文件通过 `from modules.common.sanitize import sanitize_text` 共享基础规则，扩展规则互不重叠。**此项不是重复点，已在代码层面解决。**
+
+### 5. 合规检查规则双份（确认存在，仍独立维护）
+
+| 文件 | 规则类型 | 说明 |
+|------|---------|------|
+| `ai-toolbox/work/modules/wenan/generator.py` | `_CONTENT_BLOCK_RULES`（59 条） | 批量文案风控：饮后承诺（13）、养生暗示（15）、违规功效（9）、假体验（15）、编造数量（7） |
+| `ai-toolbox/work/modules/orchestrator/engine.py:_generate_copy()` | `_COPY_BANNED` + CTA 执行 | 口播文案合规检查：禁用语列表 + CTA 检测 + 安全回退文案 |
+
+两个文件**不共享检查逻辑**，在 "饮后承诺" "养生暗示" "疾病术语" "违规功效" 四个分类上存在大量重叠规则，但各自独立实现，互不调用。**修改规则时需同步两处。**
+
+### 6. ai-toolbox/work 与 ai-toolbox/alxuanchuan 功能同构
+
+**依据**：`PROJECT_MAP.md` 标注"前端组件与 work/src/ 同构但使用 Gemini API"。两个独立代码库实现相同的 UI（AI 绘图/识图/文案/词牌匹配），只是后端 AI 模型不同。文档未描述同步策略。
+
+---
+
+## 五、文档参考
+
+| 文档 | 位置 | 用途 |
+|------|------|------|
+| `PROJECT_MAP.md` | 根目录 | 模块到文件的映射与调试指南 |
+| `readme.md` | 根目录 | 综合性项目文档（含各子项目架构详解） |
+| `CLAUDE.md` | 根目录 | 整个工作区 Agent 行为规则 |
+| `TASK.md` | 根目录 | 当前阶段任务上下文 |
+| `SYSTEM_BOUNDARY.md` | 根目录 | 本文件 — 系统边界与协作关系 |
